@@ -1,18 +1,20 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './modules/auth/context/AuthProvider';
 import LoginPage from './modules/auth/pages/LoginPage';
-import Dashboard from './modules/templates/components/Dashboard';
+import Dashboard from './modules/templates/admin/components/Dashboard';
 import ProtectedRoute from './modules/auth/components/ProtectedRoute';
 import ListOrdersPage from './modules/orders/pages/ListOrdersPage';
 import Home from './modules/home/pages/Home';
 import ListProductsPage from './modules/products/pages/ListProductsPage';
 import CreateProductPage from './modules/products/pages/CreateProductPage';
+import CartPage from './modules/cart/pages/CartPage';
+import Navbar from './modules/templates/cliente/components/NavBar';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <><Outlet /></>,
+      element: <Navbar />,
       children: [
         {
           path: '/',
@@ -20,7 +22,7 @@ function App() {
         },
         {
           path: '/cart',
-          element: <>Carrito de compras</>,
+          element: <CartPage/>,
         },
       ],
     },
@@ -31,9 +33,9 @@ function App() {
     {
       path: '/admin',
       element: (
-        <ProtectedRoute>
+         <ProtectedRoute>
           <Dashboard />
-        </ProtectedRoute>
+         </ProtectedRoute>
       ),
       children: [
         {
