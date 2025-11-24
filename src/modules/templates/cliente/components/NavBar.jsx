@@ -4,6 +4,7 @@ import useAuth from "../../../auth/hook/useAuth";
 import Button from "../../../shared/components/Button";
 import { RiAppsLine } from "react-icons/ri";
 import { IoSearchOutline } from "react-icons/io5";
+import ClientNav from "../../../shared/components/ClientNav";
 
 function NavBar() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -17,11 +18,6 @@ function NavBar() {
     navigate("/login");
   };
 
-  const getLinkStyles = ({ isActive }) =>
-    `
-      w-full block  p-2 rounded-xl transition hover:bg-gray-100
-      ${isActive ? "bg-gray-200 hover:bg-purple-100 " : ""}
-    `;
   const renderLogoutButton = (mobile = false) => (
     <Button
       className={`${mobile ? "block w-full sm:hidden" : "hidden sm:block"}`}
@@ -31,25 +27,37 @@ function NavBar() {
     </Button>
   );
 
+  // Estilos condicionales para el menú lateral
+  const mobileMenuStyles = `
+    fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50
+    transform transition-transform duration-300 ease-in-out
+    p-4 flex flex-col gap-4
+    ${openMenu ? "translate-x-0" : "translate-x-full"}
+  `;
+
+  // Estilos condicionales para el overlay del menú
+  const overlayStyles = `
+    fixed inset-0 bg-gray-500 bg-opacity-50 z-40
+    transition-opacity duration-300
+    ${openMenu ? "opacity-100" : "opacity-0 pointer-events-none"}
+  `;
+
   return (
-    <div
-      className="
-        h-full
-      "
-    >
+    <div className="h-full">
+      {/* Overlay para cerrar el menú al hacer clic fuera */}
+      <div className={overlayStyles} onClick={() => setOpenMenu(false)} />
+
       <header
         className="
-          grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_auto_auto_auto_auto]
-          items-center
-          p-4
-          shadow
-          rounded
-          bg-white
-          gap-4
-          sm:col-span-3
-
-
-        "
+        grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_auto_1fr_auto]
+        items-center
+        p-4
+        shadow
+        rounded
+        bg-white
+        gap-4
+        sm:col-span-3
+      "
       >
         {/* Logo/Icono - visible en mobile y desktop */}
         <div className="col-span-1 flex items-center">
@@ -64,21 +72,13 @@ function NavBar() {
           justify-end
         "
         >
-          <ul className="flex gap-4">
-            <li>
-              <NavLink to="/admin/products" className={getLinkStyles}>
-                Productos
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/cart" className={getLinkStyles}>
-                Carrito de Compras
-              </NavLink>
-            </li>
-          </ul>
+          {/* ClientNav para desktop - contenedor horizontal */}
+          <div className="flex gap-4">
+            <ClientNav setOpenMenu={setOpenMenu} setMobileView={() => {}} />
+          </div>
         </nav>
 
-        {/* Search Bar - visible en mobile y desktop */}
+        {/* Search Bar*/}
         <div
           className="
           col-span-1 md:col-span-1
@@ -102,7 +102,7 @@ function NavBar() {
           <IoSearchOutline />
         </div>
 
-        {/* Botón Hamburguesa - solo visible en mobile */}
+        {/* Botón Hamburguesa*/}
         <button
           className="
             col-span-1 md:hidden
@@ -120,7 +120,7 @@ function NavBar() {
           )}
         </button>
 
-        {/* Botones de auth - solo visible en desktop */}
+        {/* Botones de auth*/}
         <div className="hidden md:flex md:col-span-1 gap-2 justify-end">
           <button className="bg-purple-300 p-2 rounded-lg hover:bg-purple-400 transition">
             Iniciar Sesión
@@ -131,12 +131,34 @@ function NavBar() {
         </div>
       </header>
 
+      {/* Menú lateral móvil */}
+      <div className={mobileMenuStyles}>
+        {/* Navegación móvil */}
+        <nav className="flex-1">
+          {/* ClientNav para mobile - contenedor vertical */}
+          <ClientNav setOpenMenu={setOpenMenu} setMobileView={() => {}} />
+        </nav>
+
+        {/* Botones de auth*/}
+        <div className="flex flex-col gap-2 mt-4">
+          <button className="bg-purple-300 p-2 rounded-lg hover:bg-purple-400 transition w-full">
+            Iniciar Sesión
+          </button>
+          <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition w-full">
+            Registrarse
+          </button>
+        </div>
+
+        {/*Cerrar sesión*/}
+        {renderLogoutButton(true)}
+      </div>
+
       <main
         className="
-          p-5
-          overflow-y-scroll
-          col-span-3
-        "
+        p-5
+        overflow-y-scroll
+        col-span-3
+      "
       >
         <Outlet />
       </main>
