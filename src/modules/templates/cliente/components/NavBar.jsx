@@ -5,27 +5,67 @@ import Button from "../../../shared/components/Button";
 import { RiAppsLine } from "react-icons/ri";
 import { IoSearchOutline } from "react-icons/io5";
 import ClientNav from "../../../shared/components/ClientNav";
+import LoginModal from "../../../auth/components/LoginModal";
+
 
 function NavBar() {
   const [openMenu, setOpenMenu] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Estado para el modal
 
   const navigate = useNavigate();
-
-  const { singout } = useAuth();
+  const { singout, isAuthenticated } = useAuth(); // Agregar isAuthenticated
 
   const logout = () => {
     singout();
     navigate("/login");
   };
 
-  const renderLogoutButton = (mobile = false) => (
-    <Button
-      className={`${mobile ? "block w-full sm:hidden" : "hidden sm:block"}`}
-      onClick={logout}
-    >
-      Cerrar sesión
-    </Button>
-  );
+  const handleLoginSuccess = () => {
+    // Cerrar menú móvil si está abierto
+    setOpenMenu(false);
+    // Puedes mostrar un mensaje de éxito o redirigir
+    console.log("Login exitoso desde navbar");
+  };
+
+  const renderAuthButtons = (mobile = false) => {
+    if (isAuthenticated) {
+      // Usuario autenticado - mostrar cerrar sesión
+      return (
+        <Button
+          className={`${mobile ? "block w-full" : ""}`}
+          onClick={logout}
+          variant="secondary"
+        >
+          Cerrar sesión
+        </Button>
+      );
+    } else {
+      // Usuario no autenticado - mostrar login/registro
+      return (
+        <div className={`flex ${mobile ? "flex-col gap-2" : "gap-2"}`}>
+          <Button
+            onClick={() => {
+              setIsLoginModalOpen(true);
+              if (mobile) setOpenMenu(false);
+            }}
+            className={mobile ? "w-full" : ""}
+          >
+            Iniciar Sesión
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              navigate("/register");
+              if (mobile) setOpenMenu(false);
+            }}
+            className={mobile ? "w-full" : ""}
+          >
+            Registrarse
+          </Button>
+        </div>
+      );
+    }
+  };
 
   // Estilos condicionales para el menú lateral
   const mobileMenuStyles = `
@@ -37,7 +77,7 @@ function NavBar() {
 
   // Estilos condicionales para el overlay del menú
   const overlayStyles = `
-    fixed inset-0 bg-gray-500 bg-opacity-50 z-40
+    fixed inset-0 z-40 backdrop-blur-sm
     transition-opacity duration-300
     ${openMenu ? "opacity-100" : "opacity-0 pointer-events-none"}
   `;
@@ -120,14 +160,9 @@ function NavBar() {
           )}
         </button>
 
-        {/* Botones de auth*/}
+        {/* Botones de auth - DESKTOP */}
         <div className="hidden md:flex md:col-span-1 gap-2 justify-end">
-          <button className="bg-purple-300 p-2 rounded-lg hover:bg-purple-400 transition">
-            Iniciar Sesión
-          </button>
-          <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition">
-            Registrarse
-          </button>
+          {renderAuthButtons(false)}
         </div>
       </header>
 
@@ -139,19 +174,18 @@ function NavBar() {
           <ClientNav setOpenMenu={setOpenMenu} setMobileView={() => {}} />
         </nav>
 
-        {/* Botones de auth*/}
+        {/* Botones de auth - MOBILE */}
         <div className="flex flex-col gap-2 mt-4">
-          <button className="bg-purple-300 p-2 rounded-lg hover:bg-purple-400 transition w-full">
-            Iniciar Sesión
-          </button>
-          <button className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition w-full">
-            Registrarse
-          </button>
+          {renderAuthButtons(true)}
         </div>
-
-        {/*Cerrar sesión*/}
-        {renderLogoutButton(true)}
       </div>
+
+      {/* Modal de Login */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess}
+      />
 
       <main
         className="

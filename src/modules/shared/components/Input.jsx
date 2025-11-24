@@ -5,6 +5,7 @@ function Input({ label, error = '', ...restProps }) {
         flex
         flex-col
         h-20
+        mb-4
       '
     >
       <label>{label}:</label>
