@@ -14,6 +14,10 @@ export default function ListProductClientPage() {
 
   const searchQuery = searchParams.get("search") || ""
 
+  useEffect(() => {
+    console.log("[v0] Search query changed:", searchQuery)
+  }, [searchQuery])
+
   // Detect items per row based on grid columns
   useEffect(() => {
     const detectItemsPerRow = () => {
@@ -24,7 +28,6 @@ export default function ListProductClientPage() {
       const columnCount = gridTemplateColumns.split(" ").length
 
       setItemsPerRow(columnCount)
-      setPageSize(columnCount * 2)
     }
 
     detectItemsPerRow()
@@ -33,39 +36,40 @@ export default function ListProductClientPage() {
     return () => window.removeEventListener("resize", detectItemsPerRow)
   }, [])
 
-  // Load products when search changes or pageSize changes
   useEffect(() => {
-    if (searchQuery !== undefined) {
-      setProducts([])
-      setPageSize(itemsPerRow * 2)
-      setHasMore(true)
-    }
+    console.log("[v0] Search query changed:", searchQuery)
+    setProducts([])
+    setPageSize(itemsPerRow * 2)
+    setHasMore(true)
   }, [searchQuery, itemsPerRow])
 
-  // Load products with pageNumber always = 1, pageSize = current size
   useEffect(() => {
-    loadProducts()
-  }, [pageSize])
+    if (pageSize > 0) {
+      loadProducts()
+    }
+  }, [pageSize, searchQuery])
 
   const loadProducts = async () => {
     if (loading || pageSize === 0) return
 
     setLoading(true)
     try {
-      const { data, error } = await getProducts(searchQuery || null, null, 1, pageSize)
-
+      console.log("[v0] Calling API with search:", searchQuery || "all products", "pageSize:", pageSize)
+      const { data, error } = await getProducts(searchQuery || "", null, 1, pageSize)
       if (error) {
-        console.error("Error loading products:", error)
+        console.error("[v0] Error loading products:", error)
         setLoading(false)
         return
       }
 
       const loadedProducts = data.productItems || []
+      console.log("[v0] Products received:", loadedProducts.length)
       setProducts(loadedProducts)
 
+      // Si recibió menos productos que el pageSize solicitado, no hay más
       setHasMore(loadedProducts.length === pageSize)
     } catch (error) {
-      console.error("Error loading products:", error)
+      console.error("[v0] Error loading products:", error)
     } finally {
       setLoading(false)
     }

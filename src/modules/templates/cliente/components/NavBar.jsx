@@ -9,12 +9,12 @@ import LoginModal from "../../../auth/components/LoginModal"
 
 function NavBar() {
   const [openMenu, setOpenMenu] = useState(false)
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false) // Estado para el modal
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
 
   const navigate = useNavigate()
-  const { singout, isAuthenticated } = useAuth() // Agregar isAuthenticated
+  const { singout, isAuthenticated } = useAuth()
 
   const logout = () => {
     singout()
@@ -22,20 +22,19 @@ function NavBar() {
   }
 
   const handleLoginSuccess = () => {
-    // Cerrar menú móvil si está abierto
     setOpenMenu(false)
-    // Puedes mostrar un mensaje de éxito o redirigir
     console.log("Login exitoso desde navbar")
   }
 
-  const handleSearch = (e) => {
+  const handleSearchChange = (e) => {
     const value = e.target.value
     setSearchValue(value)
+  }
 
-    // Update URL search params
+  const handleSearchClick = () => {
     const params = new URLSearchParams(searchParams)
-    if (value) {
-      params.set("search", value)
+    if (searchValue.trim()) {
+      params.set("search", searchValue.trim())
     } else {
       params.delete("search")
     }
@@ -44,16 +43,20 @@ function NavBar() {
     setSearchParams(params)
   }
 
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchClick()
+    }
+  }
+
   const renderAuthButtons = (mobile = false) => {
     if (isAuthenticated) {
-      // Usuario autenticado - mostrar cerrar sesión
       return (
         <Button className={`${mobile ? "block w-full" : ""}`} onClick={logout} variant="secondary">
           Cerrar sesión
         </Button>
       )
     } else {
-      // Usuario no autenticado - mostrar login/registro
       return (
         <div className={`flex ${mobile ? "flex-col gap-2" : "gap-2"}`}>
           <Button
@@ -80,7 +83,6 @@ function NavBar() {
     }
   }
 
-  // Estilos condicionales para el menú lateral
   const mobileMenuStyles = `
     fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50
     transform transition-transform duration-300 ease-in-out
@@ -88,7 +90,6 @@ function NavBar() {
     ${openMenu ? "translate-x-0" : "translate-x-full"}
   `
 
-  // Estilos condicionales para el overlay del menú
   const overlayStyles = `
     fixed inset-0 z-40 backdrop-blur-sm
     transition-opacity duration-300
@@ -97,7 +98,6 @@ function NavBar() {
 
   return (
     <div className="h-full">
-      {/* Overlay para cerrar el menú al hacer clic fuera */}
       <div className={overlayStyles} onClick={() => setOpenMenu(false)} />
 
       <header
@@ -112,12 +112,10 @@ function NavBar() {
         sm:col-span-3
       "
       >
-        {/* Logo/Icono - visible en mobile y desktop */}
         <div className="col-span-1 flex items-center">
           <RiAppsLine className="text-xl" />
         </div>
 
-        {/* Navegación - solo visible en desktop */}
         <nav
           className="
           hidden md:flex md:col-span-1
@@ -125,13 +123,11 @@ function NavBar() {
           justify-end
         "
         >
-          {/* ClientNav para desktop - contenedor horizontal */}
           <div className="flex gap-4">
             <ClientNav setOpenMenu={setOpenMenu} setMobileView={() => {}} />
           </div>
         </nav>
 
-        {/* Search Bar*/}
         <div
           className="
           col-span-1 md:col-span-1
@@ -152,12 +148,18 @@ function NavBar() {
             placeholder="Buscar"
             className="border-none w-full outline-none"
             value={searchValue}
-            onChange={handleSearch}
+            onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown}
           />
-          <IoSearchOutline />
+          <button
+            onClick={handleSearchClick}
+            className="bg-transparent border-none cursor-pointer hover:opacity-70 transition-opacity"
+            aria-label="Buscar"
+          >
+            <IoSearchOutline />
+          </button>
         </div>
 
-        {/* Botón Hamburguesa*/}
         <button
           className="
             col-span-1 md:hidden
@@ -171,23 +173,17 @@ function NavBar() {
           {openMenu ? <span className="text-2xl">&#215;</span> : <span className="text-2xl">&#9776;</span>}
         </button>
 
-        {/* Botones de auth - DESKTOP */}
         <div className="hidden md:flex md:col-span-1 gap-2 justify-end">{renderAuthButtons(false)}</div>
       </header>
 
-      {/* Menú lateral móvil */}
       <div className={mobileMenuStyles}>
-        {/* Navegación móvil */}
         <nav className="flex-1">
-          {/* ClientNav para mobile - contenedor vertical */}
           <ClientNav setOpenMenu={setOpenMenu} setMobileView={() => {}} />
         </nav>
 
-        {/* Botones de auth - MOBILE */}
         <div className="flex flex-col gap-2 mt-4">{renderAuthButtons(true)}</div>
       </div>
 
-      {/* Modal de Login */}
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onSuccess={handleLoginSuccess} />
 
       <main
