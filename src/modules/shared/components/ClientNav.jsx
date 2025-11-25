@@ -9,7 +9,7 @@ function ClientNav() {
         <ul className="flex flex-col md:flex-row gap-2">
               <li>
                 <NavLink
-                  to="/admin/products"
+                  to="/"
                   className={getLinkStyles}
                   onClick={() => {setOpenMenu(false), setMobileView(false)}}
                 >
