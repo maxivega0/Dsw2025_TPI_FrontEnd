@@ -6,17 +6,15 @@ import ProductCard from "../components/ProductCard"
 export default function ListProductClientPage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
   const [searchParams] = useSearchParams()
   const gridRef = useRef(null)
   const [itemsPerRow, setItemsPerRow] = useState(4)
+
+  const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(8)
+  const [total, setTotal] = useState(0)
 
   const searchQuery = searchParams.get("search") || ""
-
-  useEffect(() => {
-    console.log("[v0] Search query changed:", searchQuery)
-  }, [searchQuery])
 
   // Detect items per row based on grid columns
   useEffect(() => {
@@ -37,25 +35,19 @@ export default function ListProductClientPage() {
   }, [])
 
   useEffect(() => {
-    console.log("[v0] Search query changed:", searchQuery)
+    setPageNumber(1)
     setProducts([])
-    setPageSize(itemsPerRow * 2)
-    setHasMore(true)
-  }, [searchQuery, itemsPerRow])
+  }, [searchQuery])
 
   useEffect(() => {
-    if (pageSize > 0) {
-      loadProducts()
-    }
-  }, [pageSize, searchQuery])
+    loadProducts()
+  }, [pageNumber, pageSize, searchQuery])
 
   const loadProducts = async () => {
-    if (loading || pageSize === 0) return
-
     setLoading(true)
     try {
-      console.log("[v0] Calling API with search:", searchQuery || "all products", "pageSize:", pageSize)
-      const { data, error } = await getProducts(searchQuery || "", null, 1, pageSize)
+      const { data, error } = await getProducts(searchQuery || "", null, pageNumber, pageSize)
+
       if (error) {
         console.error("[v0] Error loading products:", error)
         setLoading(false)
@@ -63,11 +55,8 @@ export default function ListProductClientPage() {
       }
 
       const loadedProducts = data.productItems || []
-      console.log("[v0] Products received:", loadedProducts.length)
       setProducts(loadedProducts)
-
-      // Si recibió menos productos que el pageSize solicitado, no hay más
-      setHasMore(loadedProducts.length === pageSize)
+      setTotal(data.total || 0)
     } catch (error) {
       console.error("[v0] Error loading products:", error)
     } finally {
@@ -75,8 +64,23 @@ export default function ListProductClientPage() {
     }
   }
 
-  const loadMore = () => {
-    setPageSize((prevPageSize) => prevPageSize + itemsPerRow)
+  const totalPages = Math.ceil(total / pageSize)
+
+  const handlePreviousPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber(pageNumber - 1)
+    }
+  }
+
+  const handleNextPage = () => {
+    if (pageNumber < totalPages) {
+      setPageNumber(pageNumber + 1)
+    }
+  }
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(Number(newPageSize))
+    setPageNumber(1)
   }
 
   return (
@@ -97,22 +101,45 @@ export default function ListProductClientPage() {
         </div>
       )}
 
-      {/* Load More Button */}
-      {!loading && hasMore && products.length > 0 && (
-        <div className="text-center">
-          <button
-            onClick={loadMore}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-          >
-            Cargar más
-          </button>
-        </div>
-      )}
-
       {/* No Results */}
       {!loading && products.length === 0 && (
         <div className="text-center py-12 text-gray-500">
           {searchQuery ? `No se encontraron productos para "${searchQuery}"` : "No hay productos disponibles"}
+        </div>
+      )}
+
+      {products.length > 0 && (
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <button
+            disabled={pageNumber === 1}
+            onClick={handlePreviousPage}
+            className="px-4 py-2 bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed rounded hover:bg-gray-300 transition-colors"
+          >
+            Atrás
+          </button>
+
+          <span className="text-sm font-medium">
+            Página {pageNumber} de {totalPages}
+          </span>
+
+          <button
+            disabled={pageNumber === totalPages}
+            onClick={handleNextPage}
+            className="px-4 py-2 bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed rounded hover:bg-gray-300 transition-colors"
+          >
+            Siguiente
+          </button>
+
+          <select
+            value={pageSize}
+            onChange={(e) => handlePageSizeChange(e.target.value)}
+            className="px-2 py-2 border border-gray-300 rounded"
+          >
+            <option value="4">4 por página</option>
+            <option value="8">8 por página</option>
+            <option value="12">12 por página</option>
+            <option value="20">20 por página</option>
+          </select>
         </div>
       )}
     </div>
