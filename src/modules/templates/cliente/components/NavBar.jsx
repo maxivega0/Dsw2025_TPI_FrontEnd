@@ -6,10 +6,12 @@ import { RiAppsLine } from "react-icons/ri"
 import { IoSearchOutline } from "react-icons/io5"
 import ClientNav from "../../../shared/components/ClientNav"
 import LoginModal from "../../../auth/components/LoginModal"
+import RegisterModal from "../../../auth/components/RegisterModal" // Importar RegisterModal
 
 function NavBar() {
   const [openMenu, setOpenMenu] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false) // Nuevo estado para registro
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "")
 
@@ -24,6 +26,13 @@ function NavBar() {
   const handleLoginSuccess = () => {
     setOpenMenu(false)
     console.log("Login exitoso desde navbar")
+  }
+
+  const handleRegisterSuccess = () => {
+    setOpenMenu(false)
+    console.log("Registro exitoso desde navbar")
+    // Opcional: puedes abrir automáticamente el login después del registro
+    // setIsLoginModalOpen(true);
   }
 
   const handleSearchChange = (e) => {
@@ -71,7 +80,7 @@ function NavBar() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate("/register")
+              setIsRegisterModalOpen(true) // Abrir modal de registro en lugar de navegar
               if (mobile) setOpenMenu(false)
             }}
             className={mobile ? "w-full" : ""}
@@ -184,7 +193,15 @@ function NavBar() {
         <div className="flex flex-col gap-2 mt-4">{renderAuthButtons(true)}</div>
       </div>
 
+      {/* Modal de Login */}
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onSuccess={handleLoginSuccess} />
+
+      {/* Modal de Registro */}
+      <RegisterModal 
+        isOpen={isRegisterModalOpen} 
+        onClose={() => setIsRegisterModalOpen(false)} 
+        onSuccess={handleRegisterSuccess} 
+      />
 
       <main
         className="
