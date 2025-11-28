@@ -20,7 +20,7 @@ function NavBar() {
 
   const logout = () => {
     singout()
-    navigate("/login")
+    navigate("/")
   }
 
   const handleLoginSuccess = () => {

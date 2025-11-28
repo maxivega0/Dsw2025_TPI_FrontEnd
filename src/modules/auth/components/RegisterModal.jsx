@@ -17,13 +17,13 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     formState: { errors },
     reset,
     watch,
-  } = useForm({ 
-    defaultValues: { 
-      username: "", 
-      email: "", 
-      password: "", 
+  } = useForm({
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
       confirmPassword: "",
-    } 
+    },
   });
 
   const navigate = useNavigate();
@@ -37,14 +37,17 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     try {
       // Llamada REAL al backend - misma estructura que tu login
       const { data, error } = await register(
-        formData.username, 
-        formData.email, 
+        formData.username,
+        formData.email,
         formData.password
       );
 
       if (error) {
         // Manejar errores del backend
-        if (error.message?.includes("already exists") || error.message?.includes("ya existe")) {
+        if (
+          error.message?.includes("already exists") ||
+          error.message?.includes("ya existe")
+        ) {
           setErrorMessage("El usuario o email ya está registrado");
         } else if (error.message) {
           setErrorMessage(error.message);
@@ -56,7 +59,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
       // Éxito - usuario creado
       setSuccessMessage("¡Usuario registrado exitosamente!");
-      
+
       // Limpiar y cerrar después de éxito
       setTimeout(() => {
         reset();
@@ -66,7 +69,6 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
         }
         onClose();
       }, 2000);
-
     } catch (error) {
       // Manejar errores inesperados
       console.error("Error en registro:", error);
@@ -120,8 +122,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
               required: "Usuario es obligatorio",
               minLength: {
                 value: 3,
-                message: "El usuario debe tener al menos 3 caracteres"
-              }
+                message: "El usuario debe tener al menos 3 caracteres",
+              },
             })}
             error={errors.username?.message}
             disabled={isLoading}
@@ -134,8 +136,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
               required: "Email es obligatorio",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Email inválido"
-              }
+                message: "Email inválido",
+              },
             })}
             error={errors.email?.message}
             disabled={isLoading}
@@ -146,9 +148,20 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             {...registerForm("password", {
               required: "Contraseña es obligatoria",
               minLength: {
-                value: 6,
-                message: "La contraseña debe tener al menos 6 caracteres"
-              }
+                value: 8,
+                message: "La contraseña debe tener al menos 8 caracteres",
+              },
+              validate: {
+                hasUppercase: (value) =>
+                  /[A-Z]/.test(value) || "Debe contener al menos una mayúscula",
+
+                hasLowercase: (value) =>
+                  /[a-z]/.test(value) || "Debe contener al menos una minúscula",
+
+                hasSpecialChar: (value) =>
+                  /[!@#$%^&*(),.?":{}|<>_\-\[\]\\\/]/.test(value) ||
+                  "Debe contener al menos un caracter especial",
+              },
             })}
             type="password"
             error={errors.password?.message}
@@ -159,8 +172,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             label="Confirmar Contraseña"
             {...registerForm("confirmPassword", {
               required: "Confirma tu contraseña",
-              validate: value => 
-                value === password || "Las contraseñas no coinciden"
+              validate: (value) =>
+                value === password || "Las contraseñas no coinciden",
             })}
             type="password"
             error={errors.confirmPassword?.message}
