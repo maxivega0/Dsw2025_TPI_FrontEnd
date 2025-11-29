@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import { login } from '../services/login';
+import { register } from '../services/register';
 
 const AuthContext = createContext();
 
@@ -28,12 +29,26 @@ function AuthProvider({ children }) {
     return { error: null };
   };
 
+    const singup = async (username, password, email, role) => {
+    const { data, error } = await register(username, password, email, role);
+
+    if (error) {
+      return { error };
+    }
+
+    localStorage.setItem('token', data);
+    setIsAuthenticated(true);
+
+    return { error: null };
+  };
+
   return (
     <AuthContext.Provider
       value={ {
         isAuthenticated,
         singin,
         singout,
+        singup,
       } }
     >
       {children}
