@@ -35,32 +35,14 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     setSuccessMessage("");
 
     try {
-      // Llamada REAL al backend - misma estructura que tu login
       const { data, error } = await registerModal(
         formData.username,
         formData.email,
         formData.password
       );
 
-      if (error) {
-        // Manejar errores del backend
-        if (
-          error.message?.includes("already exists") ||
-          error.message?.includes("ya existe")
-        ) {
-          setErrorMessage("El usuario o email ya está registrado");
-        } else if (error.message) {
-          setErrorMessage(error.message);
-        } else {
-          setErrorMessage("Error al registrar usuario");
-        }
-        return;
-      }
-
-      // Éxito - usuario creado
       setSuccessMessage("¡Usuario registrado exitosamente!");
 
-      // Limpiar y cerrar después de éxito
       setTimeout(() => {
         reset();
         setSuccessMessage("");
@@ -70,7 +52,6 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
         onClose();
       }, 2000);
     } catch (error) {
-      // Manejar errores inesperados
       console.error("Error en registro:", error);
       setErrorMessage(error.response?.data || "Error inesperado al registrar");
     } finally {
@@ -89,15 +70,13 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Fondo oscuro */}
+
       <div
         className="absolute inset-0 backdrop-blur-sm"
         onClick={handleClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-auto pb-5 max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white">
           <h2 className="text-xl font-semibold text-gray-900">
             Registrar Usuario
@@ -111,7 +90,6 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* Form */}
         <form
           className="p-6 space-y-4 flex flex-col gap-4"
           onSubmit={handleSubmit(onValid)}
@@ -134,10 +112,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             type="email"
             {...registerForm("email", {
               required: "Email es obligatorio",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Email inválido",
-              },
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'El email no tiene un formato válido' },
             })}
             error={errors.email?.message}
             disabled={isLoading}
@@ -147,20 +122,12 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             label="Contraseña"
             {...registerForm("password", {
               required: "Contraseña es obligatoria",
-              minLength: {
-                value: 8,
-                message: "La contraseña debe tener al menos 8 caracteres",
-              },
+              minLength: { value: 6, message: 'La contraseña debe tener al menos 6 caracteres' },
               validate: {
-                hasUppercase: (value) =>
-                  /[A-Z]/.test(value) || "Debe contener al menos una mayúscula",
-
-                hasLowercase: (value) =>
-                  /[a-z]/.test(value) || "Debe contener al menos una minúscula",
-
-                hasSpecialChar: (value) =>
-                  /[!@#$%^&*(),.?":{}|<>_\-\[\]\\\/]/.test(value) ||
-                  "Debe contener al menos un caracter especial",
+                hasUpperCase: (v) => /[A-Z]/.test(v) || 'La contraseña debe contener al menos una letra mayúscula',
+                hasLowerCase: (v) => /[a-z]/.test(v) || 'La contraseña debe contener al menos una letra minúscula',
+                hasDigit: (v) => /\d/.test(v) || 'La contraseña debe contener al menos un número',
+                hasSpecialChar: (v) => /[^A-Za-z0-9]/.test(v) || 'La contraseña debe contener al menos un caracter especial',
               },
             })}
             type="password"
@@ -180,7 +147,6 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             disabled={isLoading}
           />
 
-          {/* Mensajes */}
           {successMessage && (
             <p className="text-green-600 text-sm text-center bg-green-50 p-2 rounded">
               {successMessage}

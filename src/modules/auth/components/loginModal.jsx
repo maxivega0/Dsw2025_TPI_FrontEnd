@@ -27,30 +27,28 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
     try {
       await singin(formData.username, formData.password);
 
-      // Si llegamos aquí, el login fue exitoso
       reset();
       setErrorMessage("");
 
-      // Ejecutar callback de éxito
       if (onSuccess) {
+        const role = localStorage.getItem("role");
         onSuccess();
+        if (role == "Admin")
+        {
+          navigate("/admin/home");
+          return;
+        } 
       }
 
       onClose();
     } catch (error) {
-      // Manejar errores específicos del login
-      if (error?.response?.status === 401) {
-        setErrorMessage("Usuario o contraseña incorrectos");
-      } else if (error?.response?.status === 400) {
-        setErrorMessage("Datos de login inválidos");
-      } else if (error?.response?.data?.code) {
-        // Usar tu sistema de mensajes de error si existe
-        setErrorMessage(
-          error.response.data.message || "Error al iniciar sesión"
-        );
+
+      if (error?.response?.data?.error) {
+        setErrorMessage([error?.response?.data?.error]);
       } else {
         setErrorMessage("Error al iniciar sesión. Intente nuevamente.");
       }
+      
     } finally {
       setIsLoading(false);
     }
@@ -66,15 +64,12 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Fondo oscuro */}
       <div
         className="absolute inset-0 backdrop-blur-sm"
         onClick={handleClose}
       />
 
-      {/* Modal */}
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-auto pb-5">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">
             Iniciar Sesión
@@ -88,7 +83,6 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* Form */}
         <form
           className="p-6 space-y-4 flex flex-col gap-7 md:gap-0"
           onSubmit={handleSubmit(onValid)}

@@ -35,11 +35,9 @@ function NavBar() {
   };
 
   const handleRegisterSuccess = () => {
-    setOpenMenu(false);
-    console.log("Registro exitoso desde navbar");
-    // Opcional: puedes abrir automáticamente el login después del registro
-    // setIsLoginModalOpen(true);
-  };
+    setOpenMenu(false)
+    console.log("Registro exitoso desde navbar")
+  }
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -211,18 +209,12 @@ function NavBar() {
         </div>
       </div>
 
-      {/* Modal de Login */}
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        onSuccess={handleLoginSuccess}
-      />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onSuccess={handleLoginSuccess} />
 
-      {/* Modal de Registro */}
-      <RegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        onSuccess={handleRegisterSuccess}
+      <RegisterModal 
+        isOpen={isRegisterModalOpen} 
+        onClose={() => setIsRegisterModalOpen(false)} 
+        onSuccess={handleRegisterSuccess} 
       />
 
       <main
