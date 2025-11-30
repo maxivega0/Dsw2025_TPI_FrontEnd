@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Input from "../../shared/components/Input";
 import Button from "../../shared/components/Button";
 import { CgCloseR } from "react-icons/cg";
-import { register } from "../services/register"; // Importar con el mismo nombre
+import { registerModal } from "../services/register"; // Importar con el mismo nombre
 
 function RegisterModal({ isOpen, onClose, onSuccess }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,7 +36,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
     try {
       // Llamada REAL al backend - misma estructura que tu login
-      const { data, error } = await register(
+      const { data, error } = await registerModal(
         formData.username,
         formData.email,
         formData.password
@@ -72,7 +72,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     } catch (error) {
       // Manejar errores inesperados
       console.error("Error en registro:", error);
-      setErrorMessage("Error de conexión. Intente nuevamente.");
+      setErrorMessage(error.response?.data || "Error inesperado al registrar");
     } finally {
       setIsLoading(false);
     }

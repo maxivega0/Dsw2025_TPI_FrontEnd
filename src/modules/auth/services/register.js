@@ -1,7 +1,6 @@
 import { instance } from '../../shared/api/axiosInstance';
 
-export const register = async (username, email, password) => {
-  try {
+export const registerModal = async (username, email, password) => {
     const response = await instance.post('api/auth/register', { 
       username, 
       email, 
@@ -10,12 +9,8 @@ export const register = async (username, email, password) => {
     });
 
     return { data: response.data, error: null };
-  } catch (error) {
-    return { 
-      data: null, 
-      error: error.response?.data || { message: 'Error de conexión' } 
-    };
-  }
+  } 
+  
 export const register = async (username, password, email, role) => {
   const response = await instance.post('api/auth/register', { username, password, email, role });
 
