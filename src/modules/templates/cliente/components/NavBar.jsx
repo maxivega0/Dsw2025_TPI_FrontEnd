@@ -26,6 +26,8 @@ function NavBar() {
     clearCart(); 
     singout();
     navigate("/");
+    
+
   };
 
   const handleLoginSuccess = () => {

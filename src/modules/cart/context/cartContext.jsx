@@ -1,91 +1,103 @@
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import { createContext, useContext, useReducer, useEffect } from "react";
 
 const CartContext = createContext();
 
 // Actions
-const ADD_TO_CART = 'ADD_TO_CART';
-const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
-const UPDATE_QUANTITY = 'UPDATE_QUANTITY';
-const CLEAR_CART = 'CLEAR_CART';
-const LOAD_CART = 'LOAD_CART';
+const ADD_TO_CART = "ADD_TO_CART";
+const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+const UPDATE_QUANTITY = "UPDATE_QUANTITY";
+const CLEAR_CART = "CLEAR_CART";
 
 // Reducer
 function cartReducer(state, action) {
   switch (action.type) {
-    case LOAD_CART:
-      return action.payload;
-    
-    case ADD_TO_CART:
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      
+    case ADD_TO_CART: {
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload.id
+      );
+
+      let newItems;
+
       if (existingItem) {
-        const updatedItems = state.items.map(item =>
+        newItems = state.items.map((item) =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + action.payload.quantity }
             : item
         );
-        return calculateTotals({ ...state, items: updatedItems });
-      } else {
-        const newItems = [...state.items, action.payload];
         return calculateTotals({ ...state, items: newItems });
+      } else {
+        newItems = [...state.items, action.payload];
       }
-    
-    case REMOVE_FROM_CART:
-      const filteredItems = state.items.filter(item => item.id !== action.payload);
+
+      return calculateTotals({ ...state, items: newItems });
+    }
+
+    case REMOVE_FROM_CART: {
+      const filteredItems = state.items.filter(
+        (item) => item.id !== action.payload
+      );
       return calculateTotals({ ...state, items: filteredItems });
-    
-    case UPDATE_QUANTITY:
-      const updatedItems = state.items.map(item =>
-        item.id === action.payload.productId
-          ? { ...item, quantity: Math.max(0, action.payload.quantity) }
-          : item
-      ).filter(item => item.quantity > 0);
-      
-      return calculateTotals({ ...state, items: updatedItems });
-    
+    }
+
+    case UPDATE_QUANTITY: {
+      const updated = state.items
+        .map((item) =>
+          item.id === action.payload.productId
+            ? { ...item, quantity: Math.max(0, action.payload.quantity) }
+            : item
+        )
+        .filter((item) => item.quantity > 0);
+
+      return calculateTotals({ ...state, items: updated });
+    }
+
     case CLEAR_CART:
       return { items: [], total: 0, itemCount: 0 };
-    
+
     default:
       return state;
   }
 }
 
-// Helper para calcular totales - CORREGIDO
+// Cálculo de totales
 function calculateTotals(cartState) {
-  const total = cartState.items.reduce((sum, item) => sum + (item.currentUnitPrice * item.quantity), 0);
-  const itemCount = cartState.items.length; // ← CAMBIADO: cuenta productos distintos, no unidades
-  
+  const total = cartState.items.reduce(
+    (sum, item) => sum + item.currentUnitPrice * item.quantity,
+    0
+  );
+
+  const itemCount = cartState.items.length;
+
   return {
     ...cartState,
     total: parseFloat(total.toFixed(2)),
-    itemCount
+    itemCount,
   };
 }
 
+// 🔥 Nuevo: INITIALIZER — se ejecuta ANTES del primer render
+function initCart() {
+  try {
+    const saved = localStorage.getItem("cart");
+    if (!saved) return { items: [], total: 0, itemCount: 0 };
+
+    const parsed = JSON.parse(saved);
+
+    if (!Array.isArray(parsed.items)) throw new Error();
+
+    return calculateTotals(parsed);
+  } catch {
+    return { items: [], total: 0, itemCount: 0 };
+  }
+}
+
 export function CartProvider({ children }) {
-  const [cart, dispatch] = useReducer(cartReducer, {
-    items: [],
-    total: 0,
-    itemCount: 0
-  });
+  // 🧠 useReducer con initializer → NO necesita useEffect para cargar
+  const [cart, dispatch] = useReducer(cartReducer, undefined, initCart);
 
-  // Cargar carrito desde localStorage al inicializar
+  // Guardar carrito cuando cambie
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        const parsedCart = JSON.parse(savedCart);
-        dispatch({ type: LOAD_CART, payload: parsedCart });
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
-      }
-    }
-  }, []);
-
-  // Guardar carrito en localStorage cuando cambie
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   return (
