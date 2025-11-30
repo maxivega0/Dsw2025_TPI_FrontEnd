@@ -1,10 +1,12 @@
 import { useState } from "react"
+import { useCartActions } from "../../cart/hook/useCartActions"
 
 export default function ProductCard({ product }) {
   const [quantity, setQuantity] = useState(0)
+  const { addToCart } = useCartActions()
 
   const handleDecrease = () => {
-    if (quantity > 0) {
+    if (quantity > 0) { 
       setQuantity(quantity - 1)
     }
   }
@@ -14,8 +16,9 @@ export default function ProductCard({ product }) {
   }
 
   const handleAddToCart = () => {
+    addToCart(product, quantity)
+    setQuantity(0)
     console.log(`Agregado al carrito: ${product.name}, cantidad: ${quantity}`)
-    // Aquí puedes agregar la lógica para añadir al carrito
   }
 
   return (
@@ -40,7 +43,8 @@ export default function ProductCard({ product }) {
           <div className="flex items-center gap-2 border border-gray-300 rounded-md">
             <button
               onClick={handleDecrease}
-              className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
+              disabled={quantity === 0}
+              className="px-3 py-1 text-gray-600 hover:bg-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
               aria-label="Disminuir cantidad"
             >
               −

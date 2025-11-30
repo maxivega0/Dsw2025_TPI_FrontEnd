@@ -1,5 +1,5 @@
-import { useCart } from '../contexts/CartContext';
-import { useAuth } from '../../auth/hook/useAuth';
+import { useCart } from '../context/cartContext';
+import useAuth from '../../auth/hook/useAuth';
 
 export const useCartActions = () => {
   const { cart, dispatch } = useCart();

@@ -11,6 +11,7 @@ import CreateProductPage from './modules/products/pages/CreateProductPage';
 import CartPage from './modules/cart/pages/CartPage';
 import Navbar from './modules/templates/cliente/components/NavBar';
 import ListProductClientPage from './modules/products/pages/ListProductClientPage';
+import { CartProvider } from './modules/cart/context/CartContext';
 
 function App() {
   const router = createBrowserRouter([
@@ -66,7 +67,9 @@ function App() {
 
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthProvider>
   );
 }

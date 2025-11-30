@@ -51,10 +51,10 @@ function cartReducer(state, action) {
   }
 }
 
-// Helper para calcular totales
+// Helper para calcular totales - CORREGIDO
 function calculateTotals(cartState) {
   const total = cartState.items.reduce((sum, item) => sum + (item.currentUnitPrice * item.quantity), 0);
-  const itemCount = cartState.items.reduce((sum, item) => sum + item.quantity, 0);
+  const itemCount = cartState.items.length; // ← CAMBIADO: cuenta productos distintos, no unidades
   
   return {
     ...cartState,
