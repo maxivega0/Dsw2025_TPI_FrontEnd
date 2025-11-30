@@ -34,8 +34,6 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
       // Ejecutar callback de éxito
       if (onSuccess) {
         onSuccess();
-      } else {
-        navigate("/admin/home");
       }
 
       onClose();

@@ -1,11 +1,13 @@
 import { createContext, useState } from 'react';
 import { login } from '../services/login';
 import { register } from '../services/register';
+import { set } from 'react-hook-form';
 
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [role, setRole] = useState(null);
+  const [username, setUsername] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const token = localStorage.getItem('token');
 
@@ -15,6 +17,8 @@ function AuthProvider({ children }) {
   const singout = () => {
     localStorage.clear();
     setIsAuthenticated(false);
+    setRole(null);
+    setUsername(null);
   };
 
   const singin = async (username, password) => {
@@ -27,8 +31,10 @@ function AuthProvider({ children }) {
     
     localStorage.setItem('token', data);
     localStorage.setItem('role', user.role);
+    localStorage.setItem('username', user.username);
     setIsAuthenticated(true);
     setRole(user.role);
+    setUsername(user.username);
 
     return { error: null };
   };
@@ -42,6 +48,7 @@ function AuthProvider({ children }) {
 
     localStorage.setItem('token', data);
     setIsAuthenticated(true);
+    setUsername(username);
 
     return { error: null };
   };
@@ -50,6 +57,8 @@ function AuthProvider({ children }) {
     <AuthContext.Provider
       value={ {
         isAuthenticated,
+        role,
+        username,
         singin,
         singout,
         singup,

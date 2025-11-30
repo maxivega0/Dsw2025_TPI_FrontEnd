@@ -26,6 +26,7 @@ function NavBar() {
   const handleLoginSuccess = () => {
     setOpenMenu(false)
     console.log("Login exitoso desde navbar")
+    navigate("/admin/home")
   }
 
   const handleRegisterSuccess = () => {
