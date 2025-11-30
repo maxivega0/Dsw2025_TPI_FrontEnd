@@ -8,6 +8,7 @@ import useAuth from '../hook/useAuth';
 import { frontendErrorMessage } from '../helpers/backendError';
 
 function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const {
     register,
@@ -21,32 +22,31 @@ function RegisterForm() {
   const { singup } = useAuth();
 
   const onValid = async (formData) => {
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
-        
-      const { error } = await singup(formData.username, formData.password, formData.email, formData.role);
-        
-      console.log(formData);
 
-      if (error) {
-        setErrorMessage(error.frontendErrorMessage);
+      await singup(formData.username, formData.password, formData.email, formData.role);
 
-        return;
-      }
+      reset();
+      setErrorMessage("");
 
       if (formData.role == "Customer") {
         navigate('/');
       }
-      else{
+      else {
         navigate('/admin/home');
       }
 
     } catch (error) {
-      if (error?.response?.data?.code) {
-        setErrorMessage(frontendErrorMessage[error?.response?.data?.code]);
+      if (error?.response?.data?.error) {
+        setErrorMessage([error?.response?.data?.error]);
       } else {
         setErrorMessage('Llame a soporte');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,26 +63,32 @@ function RegisterForm() {
         sm:rounded-lg
         sm:shadow-lg
       '
-    onSubmit={handleSubmit(onValid)}
+      onSubmit={handleSubmit(onValid)}
     >
       <Input
         label='Usuario'
-        { ...register('username', {
+        {...register('username', {
           required: 'Usuario es obligatorio',
-        }) }
+          minLength: {
+            value: 3,
+            message: "El usuario debe tener al menos 3 caracteres",
+          },
+        })}
         error={errors.username?.message}
+        disabled={isLoading}
       />
       <Input label='Email'
-        { ...register('email', {
+        {...register('email', {
           required: 'Email es obligatorio',
           pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'El email no tiene un formato válido' },
-        }) }
+        })}
         type='email'
         error={errors.email?.message}
-        />
+        disabled={isLoading}
+      />
       <Input
         label='Contraseña'
-        { ...register('password', {
+        {...register('password', {
           required: 'Contraseña es obligatoria',
           minLength: { value: 6, message: 'La contraseña debe tener al menos 6 caracteres' },
           validate: {
@@ -91,28 +97,32 @@ function RegisterForm() {
             hasDigit: (v) => /\d/.test(v) || 'La contraseña debe contener al menos un número',
             hasSpecialChar: (v) => /[^A-Za-z0-9]/.test(v) || 'La contraseña debe contener al menos un caracter especial',
           },
-        }) }
+        })}
         type='password'
         error={errors.password?.message}
+        disabled={isLoading}
       />
       <Input
         label='Confirmar Contraseña'
-        { ...register('confirmPassword', {
+        {...register('confirmPassword', {
           required: 'Confirmar Contraseña es obligatoria',
           validate: (value) => value === watch('password') || 'Las contraseñas no coinciden',
-        }) }
+        })}
         type='password'
         error={errors.confirmPassword?.message}
+        disabled={isLoading}
       />
-        <Select label="Rol"
-        { ...register('role', {
+      <Select label="Rol"
+        {...register('role', {
           required: 'Rol es obligatorio',
-          }) }>
-            <option value="Admin">Admin</option>
-            <option value="Customer">Customer</option>
-        </Select>
+        })}
+        disabled={isLoading}
+      >
+        <option value="Admin">Admin</option>
+        <option value="Customer">Customer</option>
+      </Select>
 
-      <Button type='submit'>Crear Usuario</Button>
+      <Button type='submit'>{isLoading ? "Registrando Usuario..." : "Registrar Usuario"}</Button>
       <Button variant='secondary' onClick={() => navigate("/login")}>Iniciar Sesion</Button>
       {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
     </form>

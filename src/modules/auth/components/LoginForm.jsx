@@ -8,6 +8,7 @@ import { frontendErrorMessage } from '../helpers/backendError';
 
 function LoginForm() {
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,22 +20,21 @@ function LoginForm() {
   const { singin } = useAuth();
 
   const onValid = async (formData) => {
+    setIsLoading(true);
+    setErrorMessage("");
     try {
-      const { error } = await singin(formData.username, formData.password);
-
-      if (error) {
-        setErrorMessage(error.frontendErrorMessage);
-
-        return;
-      }
+      await singin(formData.username, formData.password);
 
       navigate('/admin/home');
     } catch (error) {
-      if (error?.response?.data?.code) {
-        setErrorMessage(frontendErrorMessage[error?.response?.data?.code]);
+      
+      if (error?.response?.data?.error) {
+        setErrorMessage([error?.response?.data?.error]);
       } else {
         setErrorMessage('Llame a soporte');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,6 +58,7 @@ function LoginForm() {
           required: 'Usuario es obligatorio',
         }) }
         error={errors.username?.message}
+        disabled={isLoading}
       />
       <Input
         label='Contraseña'
@@ -66,9 +67,10 @@ function LoginForm() {
         }) }
         type='password'
         error={errors.password?.message}
+        disabled={isLoading}
       />
 
-      <Button type='submit'>Iniciar Sesión</Button>
+      <Button type='submit'>{isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}</Button>
       <Button variant='secondary' onClick={() => navigate("/register")}>Registrar Usuario</Button>
       {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
     </form>
