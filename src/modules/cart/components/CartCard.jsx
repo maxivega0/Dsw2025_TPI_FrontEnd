@@ -1,7 +1,6 @@
 import Card from "../../shared/components/Card";
 import { FaRegTrashAlt } from "react-icons/fa";
 
-
 function CartCard({ item, onUpdateQuantity, onRemove }) {
   const handleDecrement = () => {
     if (item.quantity > 1) {
@@ -17,23 +16,23 @@ function CartCard({ item, onUpdateQuantity, onRemove }) {
 
   return (
     <Card className="p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Información del producto */}
         <div className="flex items-center gap-4 flex-1">
           <img
-            src={item.image || "/placeholder.svg?height=80&width=80"}
+            src={item.image || ""}
             alt={item.name}
-            className="w-20 h-20 object-cover rounded"
+            className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
           />
           <div className="flex-1">
-            <h3 className="font-medium text-gray-900">{item.name}</h3>
-            <p className="text-gray-600">${item.currentUnitPrice}</p>
-            <p className="text-sm text-gray-500">SKU: {item.sku}</p>
+            <h3 className="font-medium text-gray-900 text-sm sm:text-base">{item.name}</h3>
+            <p className="text-gray-600 text-sm sm:text-base">${item.currentUnitPrice}</p>
+            <p className="text-xs sm:text-sm text-gray-500">SKU: {item.sku}</p>
           </div>
         </div>
         
         {/* Controles y acciones */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
           {/* Controles de cantidad */}
           <div className="flex items-center gap-2">
             <button
@@ -43,9 +42,9 @@ function CartCard({ item, onUpdateQuantity, onRemove }) {
             >
               −
             </button>
-            <span className="text-sm font-medium min-w-[20px] text-center">
+            <p className="text-sm px-1 text-center">
               {item.quantity}
-            </span>
+            </p>
             <button
               onClick={handleIncrement}
               className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
@@ -54,19 +53,22 @@ function CartCard({ item, onUpdateQuantity, onRemove }) {
             </button>
           </div>
           
-          {/* Subtotal */}
-          <p className="font-medium min-w-[80px] text-right">
-            ${subtotal.toFixed(2)}
-          </p>
-          
-          {/* Botón eliminar */}
-          <button
-            onClick={() => onRemove(item.id)}
-            className="text-red-600 hover:text-red-800 transition-colors p-1 " //quiero aumentar el tamaño al icono del boton
-            title="Eliminar producto"
-          >
-            <FaRegTrashAlt className=""  />
-          </button>
+          {/* Subtotal y botón eliminar */}
+          <div className="flex items-center gap-3">
+            {/* Subtotal */}
+            <p className="font-medium text-right text-sm sm:text-base">
+              ${subtotal.toFixed(2)}
+            </p>
+            
+            {/* Botón eliminar */}
+            <button
+              onClick={() => onRemove(item.id)}
+              className="text-red-600 hover:text-red-800 transition-colors "
+              title="Eliminar producto"
+            >
+              <FaRegTrashAlt className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </div>
     </Card>
