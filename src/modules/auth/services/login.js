@@ -3,5 +3,5 @@ import { instance } from '../../shared/api/axiosInstance';
 export const login = async (username, password) => {
   const response = await instance.post('api/auth/login', { username, password });
 
-  return { data: response.data.token, user: response.data.userNormalized, error: null };
+  return { data: response.data.token, user: response.data.user, error: null };
 };

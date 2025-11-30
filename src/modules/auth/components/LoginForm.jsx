@@ -24,8 +24,8 @@ function LoginForm() {
     setErrorMessage("");
     try {
       await singin(formData.username, formData.password);
-
       navigate('/admin/home');
+
     } catch (error) {
       
       if (error?.response?.data?.error) {

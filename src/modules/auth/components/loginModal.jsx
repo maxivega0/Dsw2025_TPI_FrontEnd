@@ -31,9 +31,13 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
       setErrorMessage("");
 
       if (onSuccess) {
+        const role = localStorage.getItem("role");
         onSuccess();
-      } else {
-        navigate("/admin/home");
+        if (role == "Admin")
+        {
+          navigate("/admin/home");
+          return;
+        } 
       }
 
       onClose();

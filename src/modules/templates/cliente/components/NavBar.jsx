@@ -31,8 +31,6 @@ function NavBar() {
   const handleRegisterSuccess = () => {
     setOpenMenu(false)
     console.log("Registro exitoso desde navbar")
-    // Opcional: puedes abrir automáticamente el login después del registro
-    // setIsLoginModalOpen(true);
   }
 
   const handleSearchChange = (e) => {
@@ -193,10 +191,8 @@ function NavBar() {
         <div className="flex flex-col gap-2 mt-4">{renderAuthButtons(true)}</div>
       </div>
 
-      {/* Modal de Login */}
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onSuccess={handleLoginSuccess} />
 
-      {/* Modal de Registro */}
       <RegisterModal 
         isOpen={isRegisterModalOpen} 
         onClose={() => setIsRegisterModalOpen(false)} 

@@ -19,12 +19,12 @@ function AuthProvider({ children }) {
 
   const singin = async (username, password) => {
     const { data, user, error } = await login(username, password);
-
     if (error) {
       return { error };
-    }
-    console.log(data);
-    
+    }    
+
+    console.log(data, user);
+
     localStorage.setItem('token', data);
     localStorage.setItem('role', user.role);
     setIsAuthenticated(true);
