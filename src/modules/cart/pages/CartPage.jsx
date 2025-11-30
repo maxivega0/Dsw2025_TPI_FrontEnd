@@ -83,6 +83,7 @@ export default function CartPage() {
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Carrito de Compras</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        
         {/* Lista de productos */}
         <div className="lg:col-span-2 space-y-4">
           {cart.items.map(item => (
@@ -95,29 +96,49 @@ export default function CartPage() {
           ))}
         </div>
 
-        {/* Resumen del pedido - CORREGIDO */}
+        {/* ================================ */}
+        {/* RESUMEN DEL PEDIDO DETALLADO     */}
+        {/* ================================ */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 h-fit sticky top-4">
-          <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Resumen del Pedido</h2>
-          
-          <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
-            <div className="flex justify-between items-center">
-              <p className="text-sm sm:text-base">Productos ({cart.itemCount})</p>
-              <p className="text-sm sm:text-base font-medium">${cart.total.toFixed(2)}</p>
-            </div>
-            <div className="flex justify-between items-center font-bold text-base sm:text-lg border-t border-gray-200 pt-2 sm:pt-3">
-              <p className="text-sm sm:text-base">Total</p>
-              <p className="text-sm sm:text-base">${cart.total.toFixed(2)}</p>
-            </div>
+          <h2 className="text-lg sm:text-xl font-bold mb-4">Resumen del Pedido</h2>
+
+          {/* Detalle de cada producto */}
+          <div className="space-y-3 mb-6">
+            {cart.items.map(item => (
+              <div
+                key={item.id}
+                className="border-b border-gray-200 pb-2 last:border-b-0"
+              >
+                <p className="font-semibold text-sm sm:text-base">{item.name}</p>
+                <p className="text-gray-600 text-xs sm:text-sm">
+                  Cantidad: <span className="font-medium">{item.quantity}</span>
+                </p>
+                <p className="text-gray-700 text-xs sm:text-sm text-end">
+                  Subtotal:{" "}
+                  <span className="font-medium">
+                    ${(item.currentUnitPrice * item.quantity).toFixed(2)}
+                  </span>
+                </p>
+              </div>
+            ))}
           </div>
 
+          {/* Total General */}
+          <div className="flex justify-between items-center font-bold text-base sm:text-lg border-t border-gray-300 pt-4">
+            <p>Total</p>
+            <p>${cart.total.toFixed(2)}</p>
+          </div>
+
+          {/* Botón Finalizar */}
           <button
             onClick={handleCheckout}
             disabled={isProcessing}
-            className="w-full py-2 sm:py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
+            className="w-full py-2 sm:py-3 mt-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm sm:text-base"
           >
             {isProcessing ? "Procesando..." : "Finalizar Compra"}
           </button>
 
+          {/* Botón Vaciar */}
           <button
             onClick={clearCart}
             className="w-full py-2 mt-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm sm:text-base"
