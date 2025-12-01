@@ -63,15 +63,19 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="login-modal-title"
+    >
       <div
-        className="absolute inset-0 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm bg-black/40"
         onClick={handleClose}
       />
-
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-auto pb-5">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
+      <div className="relative bg-white shadow-xl w-full mx-auto pb-5 max-h-[90vh] overflow-y-auto sm:rounded-lg sm:max-w-md rounded-none h-full sm:h-auto">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
+          <h2 id="login-modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900">
             Iniciar Sesión
           </h2>
           <button
@@ -84,7 +88,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <form
-          className="p-6 space-y-4 flex flex-col gap-7 md:gap-0"
+          className="p-4 sm:p-6 space-y-4 flex flex-col gap-6 md:gap-0"
           onSubmit={handleSubmit(onValid)}
         >
           <Input
@@ -105,7 +109,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
             disabled={isLoading}
           />
 
-          <div className="flex flex-col gap-3 pt-12">
+          <div className="flex flex-col gap-3 pt-8 sm:pt-12">
             <Button type="submit" fullWidth disabled={isLoading}>
               {isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}
             </Button>

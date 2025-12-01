@@ -70,16 +70,21 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="register-modal-title"
+    >
 
       <div
-        className="absolute inset-0 backdrop-blur-sm"
+        className="absolute inset-0 backdrop-blur-sm bg-black/40"
         onClick={handleClose}
       />
 
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-auto pb-5 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white shadow-xl w-full mx-auto pb-5 max-h-[90vh] overflow-y-auto sm:rounded-lg sm:max-w-md rounded-none h-full sm:h-auto">
         <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 id="register-modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900">
             Registrar Usuario
           </h2>
           <button
@@ -92,7 +97,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <form
-          className="p-6 space-y-4 flex flex-col gap-4"
+          className="p-4 sm:p-6 space-y-4 flex flex-col gap-4"
           onSubmit={handleSubmit(onValid)}
         >
           <Input

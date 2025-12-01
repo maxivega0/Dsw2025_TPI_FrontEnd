@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import Button from "../../shared/components/Button"
 import Card from "../../shared/components/Card"
@@ -13,6 +13,7 @@ const productStatus = {
 
 function ListProductsPage() {
   const navigate = useNavigate()
+  const topRef = useRef(null)
 
   const [products, setProducts] = useState([])
   const [searchInput, setSearchInput] = useState("")
@@ -51,6 +52,14 @@ function ListProductsPage() {
   }, [searchTerm, status, pageSize, pageNumber])
 
   useEffect(() => {
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }, [pageNumber, pageSize, searchTerm, status])
+
+  useEffect(() => {
     setPageNumber(1)
   }, [status])
 
@@ -65,7 +74,7 @@ function ListProductsPage() {
   const isPrevDisabled = pageNumber === 1
 
   return (
-    <div>
+    <div ref={topRef}>
       <Card>
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-3xl">Productos</h1>
@@ -153,38 +162,61 @@ function ListProductsPage() {
         )}
       </div>
 
-      <div className="flex justify-center items-center mt-3">
-        <button
-          disabled={isPrevDisabled}
-          onClick={() => setPageNumber(pageNumber - 1)}
-          className="bg-gray-200 disabled:bg-gray-100"
-        >
-          Atras
-        </button>
-        <span>
-          {pageNumber} / {totalPages}
-        </span>
-        <button
-          disabled={isNextDisabled}
-          onClick={() => setPageNumber(pageNumber + 1)}
-          className="bg-gray-200 disabled:bg-gray-100"
-        >
-          Siguiente
-        </button>
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-3">
+        <div className="flex items-center gap-2">
+          {/* Previous button: icon on small, text on larger */}
+          <button
+            aria-label="Anterior"
+            disabled={isPrevDisabled}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
+          >
+            {/* Icon visible on small screens */}
+            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15L7 10l5-5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {/* Text visible on medium+ screens */}
+            <span className="hidden sm:inline">Atrás</span>
+          </button>
+        </div>
 
-        <select
-          value={pageSize}
-          onChange={(evt) => {
-            setPageNumber(1)
-            setPageSize(Number(evt.target.value))
-          }}
-          className="ml-3"
-        >
-          <option value="2">2</option>
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20">20</option>
-        </select>
+        <div className="text-sm text-center">
+          <span className="font-medium">{pageNumber}</span>
+          <span className="px-1">/</span>
+          <span className="text-gray-600">{totalPages}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            aria-label="Siguiente"
+            disabled={isNextDisabled}
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
+          >
+            <span className="hidden sm:inline">Siguiente</span>
+            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5l5 5-5 5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div className="ml-0 sm:ml-3">
+          <select
+            value={pageSize}
+            onChange={(evt) => {
+              setPageNumber(1)
+              setPageSize(Number(evt.target.value))
+            }}
+            className="ml-0 sm:ml-3 text-sm p-2 bg-white border rounded"
+            aria-label="Tamaño de página"
+          >
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+        </div>
       </div>
     </div>
   )

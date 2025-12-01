@@ -10,6 +10,10 @@ function Dashboard() {
 
   const { singout } = useAuth();
 
+  // Animación: el menú siempre está montado, solo cambia la posición y el z-index
+  const showMenu = () => setOpenMenu(true);
+  const hideMenu = () => setOpenMenu(false);
+
   const logout = () => {
     singout();
     navigate('/login');
@@ -36,11 +40,18 @@ function Dashboard() {
         grid
         grid-cols-1
         grid-rows-[auto_1fr]
-
         sm:gap-3
         sm:grid-cols-[256px_1fr]
+        relative
       "
     >
+      {/* Fondo blureado en mobile cuando el menú está abierto */}
+      {openMenu && (
+        <div
+          className="fixed inset-0 bg-black/10 backdrop-blur-sm z-10 sm:hidden"
+          onClick={hideMenu}
+        />
+      )}
       <header
         className="
           flex
@@ -50,8 +61,9 @@ function Dashboard() {
           shadow
           rounded
           bg-white
-
           sm:col-span-2
+          relative
+          z-20
         "
       >
         <span>Mi Dashboard</span>
@@ -61,12 +73,12 @@ function Dashboard() {
             bg-transparent
             border-none
             shadow-none
-
             sm:hidden
           "
-          onClick={() => setOpenMenu(!openMenu)}
+          onClick={() => (openMenu ? hideMenu() : showMenu())}
         >{ openMenu ? <span>&#215;</span> : <span>&#9776;</span>}</button>
       </header>
+      {/* Menú lateral siempre montado, animación con clase */}
       <aside
         className={`
           absolute
@@ -81,10 +93,14 @@ function Dashboard() {
           flex
           flex-col
           justify-between
-
+          transition-all
+          duration-300
+          z-20
           sm:relative
           sm:left-0
+          sm:z-auto
         `}
+        style={{ pointerEvents: openMenu || window.innerWidth >= 640 ? 'auto' : 'none' }}
       >
         <nav>
           <ul
@@ -117,6 +133,8 @@ function Dashboard() {
         className="
           p-5
           overflow-y-scroll
+          relative
+          z-0
         "
       >
         <Outlet />
