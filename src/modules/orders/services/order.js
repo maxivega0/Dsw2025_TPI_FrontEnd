@@ -1,14 +1,7 @@
 import { instance } from '../../shared/api/axiosInstance';
 
 export const createOrder = async (orderData) => {
-  try {
     console.log('Creating order with data:', orderData);
-    // const response = await instance.post('api/orders', orderData);
-    return { data: response.data, error: null };
-  } catch (error) {
-    return { 
-      data: null, 
-      error: error.response?.data || { message: 'Error al crear la orden' } 
-    };
-  }
+    const response = await instance.post('api/orders', orderData);
+    return  response.data;
 };

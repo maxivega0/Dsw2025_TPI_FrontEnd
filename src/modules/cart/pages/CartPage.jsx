@@ -11,6 +11,7 @@ export default function CartPage() {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
 
   const handleCheckout = async () => {
@@ -24,24 +25,20 @@ export default function CartPage() {
 
   const processOrder = async () => {
     setIsProcessing(true)
+    const username = localStorage.getItem("username");
     try {
       const orderData = {
-        orderItems: cart.items.map(item => ({
-          productId: item.id,
-          quantity: item.quantity,
-          unitPrice: item.currentUnitPrice
+        OrderItems: cart.items.map(item => ({
+          ProductId: item.id,
+          Quantity: item.quantity,
+          UnitPrice: item.currentUnitPrice
         })),
-        total: cart.total
+        ClientUsername: username,
       }
 
-      const { data, error } = await createOrder(orderData)
+      const { data } = await createOrder(orderData)
+      console.log(data);
       
-      if (error) {
-        console.error("Error creating order:", error)
-        alert("Error al crear la orden: " + (error.message || "Intente nuevamente"))
-        return
-      }
-
       // Éxito - limpiar carrito y redirigir
       clearCart()
       localStorage.removeItem('cart')
@@ -49,8 +46,7 @@ export default function CartPage() {
       navigate("/")
       
     } catch (error) {
-      console.error("Error processing order:", error)
-      alert("Error al procesar la orden")
+      setErrorMessage([error.response?.data?.error || "Error al procesar la orden"])
     } finally {
       setIsProcessing(false)
     }
@@ -84,7 +80,6 @@ export default function CartPage() {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         
-        {/* Lista de productos */}
         <div className="lg:col-span-2 space-y-4">
           {cart.items.map(item => (
             <CartCard
@@ -96,13 +91,9 @@ export default function CartPage() {
           ))}
         </div>
 
-        {/* ================================ */}
-        {/* RESUMEN DEL PEDIDO DETALLADO     */}
-        {/* ================================ */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 h-fit sticky top-4">
           <h2 className="text-lg sm:text-xl font-bold mb-4">Resumen del Pedido</h2>
 
-          {/* Detalle de cada producto */}
           <div className="space-y-3 mb-6">
             {cart.items.map(item => (
               <div
@@ -123,13 +114,12 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Total General */}
           <div className="flex justify-between items-center font-bold text-base sm:text-lg border-t border-gray-300 pt-4">
             <p>Total</p>
             <p>${cart.total.toFixed(2)}</p>
           </div>
+          {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
 
-          {/* Botón Finalizar */}
           <button
             onClick={handleCheckout}
             disabled={isProcessing}
@@ -138,7 +128,6 @@ export default function CartPage() {
             {isProcessing ? "Procesando..." : "Finalizar Compra"}
           </button>
 
-          {/* Botón Vaciar */}
           <button
             onClick={clearCart}
             className="w-full py-2 mt-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors text-sm sm:text-base"
@@ -148,7 +137,6 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* Modal de Login */}
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}

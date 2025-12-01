@@ -5,7 +5,6 @@ import Input from '../../shared/components/Input';
 import Select from '../../shared/components/Select';
 import Button from '../../shared/components/Button';
 import useAuth from '../hook/useAuth';
-import { frontendErrorMessage } from '../helpers/backendError';
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);

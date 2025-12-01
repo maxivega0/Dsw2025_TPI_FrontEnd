@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Input from "../../shared/components/Input";
 import Button from "../../shared/components/Button";
 import { CgCloseR } from "react-icons/cg";
-import { registerModal } from "../services/register"; // Importar con el mismo nombre
+import useAuth from "../hook/useAuth";
 
 function RegisterModal({ isOpen, onClose, onSuccess }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,6 +28,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
   const navigate = useNavigate();
   const password = watch("password");
+  const { singup } = useAuth();
 
   const onValid = async (formData) => {
     setIsLoading(true);
@@ -35,7 +36,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     setSuccessMessage("");
 
     try {
-      const { data, error } = await registerModal(
+      const { data, error } = await singup(
         formData.username,
         formData.email,
         formData.password

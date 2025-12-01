@@ -31,11 +31,17 @@ function App() {
     },
     {
       path: '/login',
-      element: <LoginPage />,
+      element:
+      (<ProtectedRoute>
+        <LoginPage />
+      </ProtectedRoute>) ,
     },
     {
       path: '/register',
-      element: <RegisterPage />,
+      element: 
+      (<ProtectedRoute>
+        <RegisterPage />
+      </ProtectedRoute> ),
     },
     {
       path: '/admin',

@@ -18,30 +18,27 @@ function AuthProvider({ children }) {
   };
 
   const singin = async (username, password) => {
-    const { data, user, error } = await login(username, password);
-    if (error) {
-      return { error };
-    }    
+    const { data, user } = await login(username, password);
 
     console.log(data, user);
 
     localStorage.setItem('token', data);
     localStorage.setItem('role', user.role);
+    localStorage.setItem('username', user.username);
     setIsAuthenticated(true);
     setRole(user.role);
 
     return { error: null };
   };
 
-    const singup = async (username, password, email, role) => {
-    const { data, error } = await register(username, password, email, role);
-
-    if (error) {
-      return { error };
-    }
+  const singup = async (username, password, email, role) => {
+    const { data } = await register(username, password, email, role);
 
     localStorage.setItem('token', data);
+    localStorage.setItem('role', user.role);
+    localStorage.setItem('username', user.username);
     setIsAuthenticated(true);
+    setRole(user.role);
 
     return { error: null };
   };
