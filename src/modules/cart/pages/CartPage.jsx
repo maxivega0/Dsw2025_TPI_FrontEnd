@@ -39,7 +39,6 @@ export default function CartPage() {
       const { data } = await createOrder(orderData)
       console.log(data);
       
-      // Éxito - limpiar carrito y redirigir
       clearCart()
       localStorage.removeItem('cart')
       alert("¡Orden creada exitosamente!")

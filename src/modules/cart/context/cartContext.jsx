@@ -2,13 +2,11 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 
 const CartContext = createContext();
 
-// Actions
 const ADD_TO_CART = "ADD_TO_CART";
 const REMOVE_FROM_CART = "REMOVE_FROM_CART";
 const UPDATE_QUANTITY = "UPDATE_QUANTITY";
 const CLEAR_CART = "CLEAR_CART";
 
-// Reducer
 function cartReducer(state, action) {
   switch (action.type) {
     case ADD_TO_CART: {
@@ -59,7 +57,6 @@ function cartReducer(state, action) {
   }
 }
 
-// Cálculo de totales
 function calculateTotals(cartState) {
   const total = cartState.items.reduce(
     (sum, item) => sum + item.currentUnitPrice * item.quantity,
@@ -75,7 +72,6 @@ function calculateTotals(cartState) {
   };
 }
 
-// 🔥 Nuevo: INITIALIZER — se ejecuta ANTES del primer render
 function initCart() {
   try {
     const saved = localStorage.getItem("cart");
@@ -92,10 +88,8 @@ function initCart() {
 }
 
 export function CartProvider({ children }) {
-  // 🧠 useReducer con initializer → NO necesita useEffect para cargar
   const [cart, dispatch] = useReducer(cartReducer, undefined, initCart);
 
-  // Guardar carrito cuando cambie
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);

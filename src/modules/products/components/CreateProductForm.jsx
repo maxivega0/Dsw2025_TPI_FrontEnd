@@ -29,7 +29,6 @@ function CreateProductForm() {
 
   const onValid = async (formData) => {
     try {
-      // Ensure numeric types are numbers
       const payload = {
         ...formData,
         price: Number(formData.price),
@@ -40,11 +39,9 @@ function CreateProductForm() {
 
       navigate('/admin/products');
     } catch (error) {
-      // If server returns a specific code, use frontend mapping
       if (error.response?.data?.code) {
         const code = error.response.data.code;
         const message = frontendErrorMessage[code] || 'Contactar a Soporte';
-        // If it's a field-specific code (e.g., 3000 for SKU), set field error.
         if (code === 3000) {
           setError('sku', { type: 'server', message });
         } else {
@@ -52,14 +49,12 @@ function CreateProductForm() {
         }
       }
 
-      // If server returns validation errors per field, map them to React Hook Form
       if (error.response?.data?.errors) {
-        const errorsFromServer = error.response.data.errors; // { fieldName: ["msg"] }
+        const errorsFromServer = error.response.data.errors;
         Object.keys(errorsFromServer).forEach((field) => {
           setError(field, { type: 'server', message: errorsFromServer[field].join(', ') });
         });
       }
-      // fallback generic message
       if (!error.response?.data?.code && !error.response?.data?.errors) {
         setErrorBackendMessage('Contactar a Soporte');
       }

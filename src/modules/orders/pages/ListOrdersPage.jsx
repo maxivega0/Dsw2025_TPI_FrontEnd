@@ -1,71 +1,76 @@
-import Card from '../../shared/components/Card';
-import { listOrders } from '../services/listServices';
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState, useRef } from "react"
-import Button from "../../shared/components/Button"
+import Card from "../../shared/components/Card";
+import { listOrders } from "../services/listServices";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import Button from "../../shared/components/Button";
 
 const Orderstatus = {
   ALL: "all",
   ENABLED: "enabled",
   DISABLED: "disabled",
-}
+};
 
 function ListOrdersPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [searchInput, setSearchInput] = useState("")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [status, setStatus] = useState(Orderstatus.ALL)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const topRef = useRef(null)
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState(Orderstatus.ALL);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const topRef = useRef(null);
 
-  const [total, setTotal] = useState(0)
-  const [orders, setOrders] = useState([])
+  const [total, setTotal] = useState(0);
+  const [orders, setOrders] = useState([]);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const fetchOrders = async () => {
     try {
-      setLoading(true)
-      const { data, error } = await listOrders(searchTerm, status, pageNumber, pageSize)
+      setLoading(true);
+      const { data, error } = await listOrders(
+        searchTerm,
+        status,
+        pageNumber,
+        pageSize
+      );
 
-      if (error) throw error
-      
-      setTotal(data.total)
-      setOrders(data.orders)
+      if (error) throw error;
+
+      setTotal(data.total);
+      setOrders(data.orders);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchOrders()
-  }, [searchTerm, status, pageSize, pageNumber])
+    fetchOrders();
+  }, [searchTerm, status, pageSize, pageNumber]);
 
   useEffect(() => {
     if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [pageNumber, pageSize, searchTerm, status])
+  }, [pageNumber, pageSize, searchTerm, status]);
 
   useEffect(() => {
-    setPageNumber(1)
-  }, [status])
+    setPageNumber(1);
+  }, [status]);
 
-  const totalPages = Math.ceil(total / pageSize) || 1
+  const totalPages = Math.ceil(total / pageSize) || 1;
 
   const handleSearch = () => {
-    setSearchTerm(searchInput)
-    setPageNumber(1)
-  }
+    setSearchTerm(searchInput);
+    setPageNumber(1);
+  };
 
-  const isNextDisabled = pageNumber >= totalPages
-  const isPrevDisabled = pageNumber === 1
+  const isNextDisabled = pageNumber >= totalPages;
+  const isPrevDisabled = pageNumber === 1;
 
   return (
     <div ref={topRef}>
@@ -73,9 +78,17 @@ function ListOrdersPage() {
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-3xl">Ordenes</h1>
           <Button className="h-11 w-11 rounded-2xl sm:hidden">
-            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
               <g id="SVGRepo_iconCarrier">
                 {" "}
                 <path
@@ -101,9 +114,17 @@ function ListOrdersPage() {
               className="text-[1.3rem] w-full"
             />
             <Button className="h-11 w-11" onClick={handleSearch}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></g>
                 <g id="SVGRepo_iconCarrier">
                   {" "}
                   <path
@@ -117,7 +138,10 @@ function ListOrdersPage() {
               </svg>
             </Button>
           </div>
-          <select onChange={(evt) => setStatus(evt.target.value)} className="text-[1.3rem]">
+          <select
+            onChange={(evt) => setStatus(evt.target.value)}
+            className="text-[1.3rem]"
+          >
             <option value={Orderstatus.ALL}>Todos</option>
             <option value={Orderstatus.ENABLED}>Habilitados</option>
             <option value={Orderstatus.DISABLED}>Inhabilitados</option>
@@ -134,11 +158,13 @@ function ListOrdersPage() {
 
         {!loading && (orders.length === 0 || orders == null) && (
           <div className="text-center py-12 text-gray-500">
-            {searchTerm ? `No se encontraron ordenes para "${searchTerm}"` : "No hay ordenes disponibles"}
+            {searchTerm
+              ? `No se encontraron ordenes para "${searchTerm}"`
+              : "No hay ordenes disponibles"}
           </div>
         )}
 
-        { orders.length > 0 && (
+        {orders.length > 0 &&
           orders?.map((order) => (
             <Card key={order.id}>
               <h1> #{order.id} </h1>
@@ -148,8 +174,7 @@ function ListOrdersPage() {
                 {order.isActive ? "Activado" : "Desactivado"}
               </p>
             </Card>
-          ))
-        )}
+          ))}
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-3">
@@ -160,8 +185,19 @@ function ListOrdersPage() {
             onClick={() => setPageNumber(pageNumber - 1)}
             className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
           >
-            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 15L7 10l5-5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              className="w-5 h-5 sm:hidden"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 15L7 10l5-5"
+                stroke="#000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <span className="hidden sm:inline">Atrás</span>
           </button>
@@ -181,8 +217,19 @@ function ListOrdersPage() {
             className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
           >
             <span className="hidden sm:inline">Siguiente</span>
-            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5l5 5-5 5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              className="w-5 h-5 sm:hidden"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 5l5 5-5 5"
+                stroke="#000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -191,8 +238,8 @@ function ListOrdersPage() {
           <select
             value={pageSize}
             onChange={(evt) => {
-              setPageNumber(1)
-              setPageSize(Number(evt.target.value))
+              setPageNumber(1);
+              setPageSize(Number(evt.target.value));
             }}
             className="ml-0 sm:ml-3 text-sm p-2 bg-white border rounded"
             aria-label="Tamaño de página"
@@ -205,7 +252,7 @@ function ListOrdersPage() {
         </div>
       </div>
     </div>
-  )
-};
+  );
+}
 
 export default ListOrdersPage;

@@ -1,29 +1,28 @@
-import { useState } from "react"
-import { useCartActions } from "../../cart/hook/useCartActions"
+import { useState } from "react";
+import { useCartActions } from "../../cart/hook/useCartActions";
 
 export default function ProductCard({ product }) {
-  const [quantity, setQuantity] = useState(0)
-  const { addToCart } = useCartActions()
+  const [quantity, setQuantity] = useState(0);
+  const { addToCart } = useCartActions();
 
   const handleDecrease = () => {
-    if (quantity > 0) { 
-      setQuantity(quantity - 1)
+    if (quantity > 0) {
+      setQuantity(quantity - 1);
     }
-  }
+  };
 
   const handleIncrease = () => {
-    setQuantity(quantity + 1)
-  }
+    setQuantity(quantity + 1);
+  };
 
   const handleAddToCart = () => {
-    addToCart(product, quantity)
-    setQuantity(0)
-    console.log(`Agregado al carrito: ${product.name}, cantidad: ${quantity}`)
-  }
+    addToCart(product, quantity);
+    setQuantity(0);
+    console.log(`Agregado al carrito: ${product.name}, cantidad: ${quantity}`);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-      {/* Imagen del producto */}
       <div className="relative w-full aspect-square bg-gray-200">
         <img
           src={product.image || "/placeholder.svg?height=300&width=300"}
@@ -32,14 +31,15 @@ export default function ProductCard({ product }) {
         />
       </div>
 
-      {/* Información del producto */}
       <div className="p-4">
-        <h3 className="text-sm text-gray-700 mb-2 line-clamp-2">{product.name}</h3>
-        <p className="text-lg font-semibold text-gray-900 mb-4">${product.currentUnitPrice}</p>
+        <h3 className="text-sm text-gray-700 mb-2 line-clamp-2">
+          {product.name}
+        </h3>
+        <p className="text-lg font-semibold text-gray-900 mb-4">
+          ${product.currentUnitPrice}
+        </p>
 
-        {/* Controles de cantidad y botón agregar */}
         <div className="flex items-center justify-between gap-2">
-          {/* Controles de cantidad */}
           <div className="flex items-center gap-2 border border-gray-300 rounded-md">
             <button
               onClick={handleDecrease}
@@ -49,7 +49,9 @@ export default function ProductCard({ product }) {
             >
               −
             </button>
-            <span className="text-sm font-medium min-w-[20px] text-center">{quantity}</span>
+            <span className="text-sm font-medium min-w-[20px] text-center">
+              {quantity}
+            </span>
             <button
               onClick={handleIncrease}
               className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
@@ -59,7 +61,6 @@ export default function ProductCard({ product }) {
             </button>
           </div>
 
-          {/* Botón Agregar */}
           <button
             onClick={handleAddToCart}
             disabled={quantity === 0}
@@ -70,5 +71,5 @@ export default function ProductCard({ product }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

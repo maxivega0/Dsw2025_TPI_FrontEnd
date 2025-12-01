@@ -1,77 +1,82 @@
-import { useEffect, useState, useRef } from "react"
-import { useNavigate } from "react-router-dom"
-import Button from "../../shared/components/Button"
-import Card from "../../shared/components/Card"
-import { getProducts } from "../services/list"
-import { set } from "react-hook-form"
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "../../shared/components/Button";
+import Card from "../../shared/components/Card";
+import { getProducts } from "../services/list";
+import { set } from "react-hook-form";
 
 const productStatus = {
   ALL: "all",
   ENABLED: "enabled",
   DISABLED: "disabled",
-}
+};
 
 function ListProductsPage() {
-  const navigate = useNavigate()
-  const topRef = useRef(null)
+  const navigate = useNavigate();
+  const topRef = useRef(null);
 
-  const [products, setProducts] = useState([])
-  const [searchInput, setSearchInput] = useState("")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [status, setStatus] = useState(productStatus.ALL)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [products, setProducts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState(productStatus.ALL);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchProducts = async () => {
-    setLoading(true) 
+    setLoading(true);
     try {
-      const { data, error } = await getProducts(searchTerm, status, pageNumber, pageSize)
+      const { data, error } = await getProducts(
+        searchTerm,
+        status,
+        pageNumber,
+        pageSize
+      );
 
       if (error) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
-      
-      const loadedProducts = data.productItems || []
-      setTotal(data.total || 0)
-      setProducts(loadedProducts)
+
+      const loadedProducts = data.productItems || [];
+      setTotal(data.total || 0);
+      setProducts(loadedProducts);
     } catch (error) {
       console.log(error);
-      
-      setError(error.message)
+
+      setError(error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchProducts()
-  }, [searchTerm, status, pageSize, pageNumber])
+    fetchProducts();
+  }, [searchTerm, status, pageSize, pageNumber]);
 
   useEffect(() => {
     if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [pageNumber, pageSize, searchTerm, status])
+  }, [pageNumber, pageSize, searchTerm, status]);
 
   useEffect(() => {
-    setPageNumber(1)
-  }, [status])
+    setPageNumber(1);
+  }, [status]);
 
-  const totalPages = Math.ceil(total / pageSize) || 1
+  const totalPages = Math.ceil(total / pageSize) || 1;
 
   const handleSearch = () => {
-    setSearchTerm(searchInput)
-    setPageNumber(1)
-  }
+    setSearchTerm(searchInput);
+    setPageNumber(1);
+  };
 
-  const isNextDisabled = pageNumber >= totalPages
-  const isPrevDisabled = pageNumber === 1
+  const isNextDisabled = pageNumber >= totalPages;
+  const isPrevDisabled = pageNumber === 1;
 
   return (
     <div ref={topRef}>
@@ -79,9 +84,17 @@ function ListProductsPage() {
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-3xl">Productos</h1>
           <Button className="h-11 w-11 rounded-2xl sm:hidden">
-            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></g>
               <g id="SVGRepo_iconCarrier">
                 {" "}
                 <path
@@ -96,7 +109,10 @@ function ListProductsPage() {
             </svg>
           </Button>
 
-          <Button className="hidden sm:block" onClick={() => navigate("/admin/products/create")}>
+          <Button
+            className="hidden sm:block"
+            onClick={() => navigate("/admin/products/create")}
+          >
             Crear Producto
           </Button>
         </div>
@@ -111,9 +127,17 @@ function ListProductsPage() {
               className="text-[1.3rem] w-full"
             />
             <Button className="h-11 w-11" onClick={handleSearch}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></g>
                 <g id="SVGRepo_iconCarrier">
                   {" "}
                   <path
@@ -127,7 +151,10 @@ function ListProductsPage() {
               </svg>
             </Button>
           </div>
-          <select onChange={(evt) => setStatus(evt.target.value)} className="text-[1.3rem]">
+          <select
+            onChange={(evt) => setStatus(evt.target.value)}
+            className="text-[1.3rem]"
+          >
             <option value={productStatus.ALL}>Todos</option>
             <option value={productStatus.ENABLED}>Habilitados</option>
             <option value={productStatus.DISABLED}>Inhabilitados</option>
@@ -144,10 +171,12 @@ function ListProductsPage() {
 
         {!loading && (products.length === 0 || products == null) && (
           <div className="text-center py-12 text-gray-500">
-            {searchTerm ? `No se encontraron productos para "${searchTerm}"` : "No hay productos disponibles"}
+            {searchTerm
+              ? `No se encontraron productos para "${searchTerm}"`
+              : "No hay productos disponibles"}
           </div>
         )}
-        { products.length > 0 && (
+        {products.length > 0 &&
           products?.map((product) => (
             <Card key={product.sku}>
               <h1>
@@ -158,24 +187,31 @@ function ListProductsPage() {
                 {product.isActive ? "Activado" : "Desactivado"}
               </p>
             </Card>
-          ))
-        )}
+          ))}
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-3">
         <div className="flex items-center gap-2">
-          {/* Previous button: icon on small, text on larger */}
           <button
             aria-label="Anterior"
             disabled={isPrevDisabled}
             onClick={() => setPageNumber(pageNumber - 1)}
             className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
           >
-            {/* Icon visible on small screens */}
-            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 15L7 10l5-5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              className="w-5 h-5 sm:hidden"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 15L7 10l5-5"
+                stroke="#000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
-            {/* Text visible on medium+ screens */}
             <span className="hidden sm:inline">Atrás</span>
           </button>
         </div>
@@ -194,8 +230,19 @@ function ListProductsPage() {
             className="bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed p-2 rounded flex items-center justify-center sm:px-3 sm:py-2"
           >
             <span className="hidden sm:inline">Siguiente</span>
-            <svg className="w-5 h-5 sm:hidden" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5l5 5-5 5" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg
+              className="w-5 h-5 sm:hidden"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 5l5 5-5 5"
+                stroke="#000"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -204,8 +251,8 @@ function ListProductsPage() {
           <select
             value={pageSize}
             onChange={(evt) => {
-              setPageNumber(1)
-              setPageSize(Number(evt.target.value))
+              setPageNumber(1);
+              setPageSize(Number(evt.target.value));
             }}
             className="ml-0 sm:ml-3 text-sm p-2 bg-white border rounded"
             aria-label="Tamaño de página"
@@ -219,7 +266,7 @@ function ListProductsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ListProductsPage
+export default ListProductsPage;

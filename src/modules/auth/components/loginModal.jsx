@@ -33,22 +33,19 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
       if (onSuccess) {
         const role = localStorage.getItem("role");
         onSuccess();
-        if (role == "Admin")
-        {
+        if (role == "Admin") {
           navigate("/admin/home");
           return;
-        } 
+        }
       }
 
       onClose();
     } catch (error) {
-
       if (error?.response?.data?.error) {
         setErrorMessage([error?.response?.data?.error]);
       } else {
         setErrorMessage("Error al iniciar sesión. Intente nuevamente.");
       }
-      
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +72,10 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
       />
       <div className="relative bg-white shadow-xl w-full mx-auto pb-5 max-h-[90vh] overflow-y-auto sm:rounded-lg sm:max-w-md rounded-none h-full sm:h-auto">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
-          <h2 id="login-modal-title" className="text-xl sm:text-2xl font-semibold text-gray-900">
+          <h2
+            id="login-modal-title"
+            className="text-xl sm:text-2xl font-semibold text-gray-900"
+          >
             Iniciar Sesión
           </h2>
           <button

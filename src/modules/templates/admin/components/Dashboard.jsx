@@ -10,7 +10,6 @@ function Dashboard() {
 
   const { singout } = useAuth();
 
-  // Animación: el menú siempre está montado, solo cambia la posición y el z-index
   const showMenu = () => setOpenMenu(true);
   const hideMenu = () => setOpenMenu(false);
 
@@ -45,7 +44,6 @@ function Dashboard() {
         relative
       "
     >
-      {/* Fondo blureado en mobile cuando el menú está abierto */}
       {openMenu && (
         <div
           className="fixed inset-0 bg-black/10 backdrop-blur-sm z-10 sm:hidden"
@@ -78,7 +76,6 @@ function Dashboard() {
           onClick={() => (openMenu ? hideMenu() : showMenu())}
         >{ openMenu ? <span>&#215;</span> : <span>&#9776;</span>}</button>
       </header>
-      {/* Menú lateral siempre montado, animación con clase */}
       <aside
         className={`
           absolute

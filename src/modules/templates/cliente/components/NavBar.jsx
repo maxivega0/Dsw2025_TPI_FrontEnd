@@ -23,11 +23,9 @@ function NavBar() {
   const { clearCart } = useCartActions();
 
   const logout = () => {
-    clearCart(); 
+    clearCart();
     singout();
     navigate("/");
-    
-
   };
 
   const handleLoginSuccess = () => {
@@ -37,9 +35,9 @@ function NavBar() {
   };
 
   const handleRegisterSuccess = () => {
-    setOpenMenu(false)
-    console.log("Registro exitoso desde navbar")
-  }
+    setOpenMenu(false);
+    console.log("Registro exitoso desde navbar");
+  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -53,7 +51,6 @@ function NavBar() {
     } else {
       params.delete("search");
     }
-    // Reset to page 1 when searching
     params.delete("pageNumber");
     setSearchParams(params);
   };
@@ -90,7 +87,7 @@ function NavBar() {
           <Button
             variant="secondary"
             onClick={() => {
-              setIsRegisterModalOpen(true); // Abrir modal de registro en lugar de navegar
+              setIsRegisterModalOpen(true);
               if (mobile) setOpenMenu(false);
             }}
             className={mobile ? "w-full" : ""}
@@ -211,12 +208,16 @@ function NavBar() {
         </div>
       </div>
 
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} onSuccess={handleLoginSuccess} />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onSuccess={handleLoginSuccess}
+      />
 
-      <RegisterModal 
-        isOpen={isRegisterModalOpen} 
-        onClose={() => setIsRegisterModalOpen(false)} 
-        onSuccess={handleRegisterSuccess} 
+      <RegisterModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        onSuccess={handleRegisterSuccess}
       />
 
       <main

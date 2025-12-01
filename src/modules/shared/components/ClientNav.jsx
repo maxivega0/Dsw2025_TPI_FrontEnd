@@ -2,8 +2,8 @@ import { NavLink } from "react-router-dom";
 import { useCartActions } from "../../cart/hook/useCartActions";
 
 function ClientNav({ setOpenMenu, setMobileView }) {
-  const { getCartItemCount } = useCartActions(); // ← DESTRUCTURAR aquí
-  
+  const { getCartItemCount } = useCartActions();
+
   const getLinkStyles = ({ isActive }) =>
     `
       w-full block p-2 rounded-xl transition hover:bg-gray-100
@@ -23,7 +23,7 @@ function ClientNav({ setOpenMenu, setMobileView }) {
           Productos
         </NavLink>
       </li>
-      <li className="relative"> {/* ← Agregar relative aquí */}
+      <li className="relative">
         <NavLink
           to="/cart"
           className={getLinkStyles}
@@ -32,7 +32,7 @@ function ClientNav({ setOpenMenu, setMobileView }) {
           }}
         >
           Carrito de Compras
-          {getCartItemCount() > 0 && ( // ← Ahora getCartItemCount está definido
+          {getCartItemCount() > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
               {getCartItemCount()}
             </span>
