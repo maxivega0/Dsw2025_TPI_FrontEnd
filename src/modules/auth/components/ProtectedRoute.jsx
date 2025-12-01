@@ -3,13 +3,12 @@ import useAuth from '../hook/useAuth';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useAuth();
+  const role = localStorage.getItem('role');
   
   if (!isAuthenticated) {
     return <Navigate to='/login' />;
-  }else if (localStorage.getItem('role') !== 'Admin' ){
+  }else if (role !== 'Admin' ){
     return <Navigate to='/' />;
-  }else if (localStorage.getItem('role') === 'Admin' && (window.location.pathname === '/login' || window.location.pathname === '/register')){
-    return <Navigate to='/admin/home' />;
   }
 
   return children;

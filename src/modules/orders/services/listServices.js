@@ -1,19 +1,19 @@
-export const listOrders = async () => {
-  const response = await fetch('/api/orders', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
-  });
+import { instance } from '../../shared/api/axiosInstance';
 
-  if (response.ok) {
-    const data = await response.json();
+export const listOrders = async (search = null, status = null, pageNumber = 1, pageSize = 20) => {
+  const params = {}
 
-    return { data, error: null };
-  } else {
-    const error = await response.json();
+  if (search) params.search = search
+  if (status) params.status = status
+  params.pageNumber = pageNumber
+  params.pageSize = pageSize
 
-    return { data: null, error };
+  const queryString = new URLSearchParams(params)
+
+  try {
+    const response = await instance.get(`api/orders/admin?${queryString}`)
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: error.message }
   }
 };

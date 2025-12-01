@@ -12,6 +12,7 @@ import CartPage from './modules/cart/pages/CartPage';
 import Navbar from './modules/templates/cliente/components/NavBar';
 import ListProductClientPage from './modules/products/pages/ListProductClientPage';
 import { CartProvider } from './modules/cart/context/CartContext';
+import PublicRoute from './modules/shared/components/PublicRoute';
 
 function App() {
   const router = createBrowserRouter([
@@ -31,17 +32,20 @@ function App() {
     },
     {
       path: '/login',
-      element:
-      (<ProtectedRoute>
-        <LoginPage />
-      </ProtectedRoute>) ,
+      element:( 
+        <PublicRoute>
+          <LoginPage/>
+        </PublicRoute>
+      ),
     },
     {
       path: '/register',
       element: 
-      (<ProtectedRoute>
-        <RegisterPage />
-      </ProtectedRoute> ),
+      (
+        <PublicRoute>
+          <RegisterPage/>
+        </PublicRoute>
+      )
     },
     {
       path: '/admin',

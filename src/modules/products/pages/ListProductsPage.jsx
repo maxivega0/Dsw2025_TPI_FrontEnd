@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import Button from "../../shared/components/Button"
 import Card from "../../shared/components/Card"
 import { getProducts } from "../services/list"
+import { set } from "react-hook-form"
 
 const productStatus = {
   ALL: "all",
@@ -13,28 +14,33 @@ const productStatus = {
 function ListProductsPage() {
   const navigate = useNavigate()
 
+  const [products, setProducts] = useState([])
   const [searchInput, setSearchInput] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const [status, setStatus] = useState(productStatus.ALL)
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-
   const [total, setTotal] = useState(0)
-  const [products, setProducts] = useState([])
-
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const fetchProducts = async () => {
+    setLoading(true) 
     try {
-      setLoading(true)
       const { data, error } = await getProducts(searchTerm, status, pageNumber, pageSize)
 
-      if (error) throw error
-
-      setTotal(data.total)
-      setProducts(data.productItems)
+      if (error) {
+        setLoading(false)
+        return
+      }
+      
+      const loadedProducts = data.productItems || []
+      setTotal(data.total || 0)
+      setProducts(loadedProducts)
     } catch (error) {
-      console.error(error)
+      console.log(error);
+      
+      setError(error.message)
     } finally {
       setLoading(false)
     }
@@ -121,10 +127,19 @@ function ListProductsPage() {
       </Card>
 
       <div className="mt-4 flex flex-col gap-4">
-        {loading ? (
-          <span>Buscando datos...</span>
-        ) : (
-          products.map((product) => (
+        {loading && (
+          <div className="text-center py-4">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+          </div>
+        )}
+
+        {!loading && (products.length === 0 || products == null) && (
+          <div className="text-center py-12 text-gray-500">
+            {searchTerm ? `No se encontraron productos para "${searchTerm}"` : "No hay productos disponibles"}
+          </div>
+        )}
+        { products.length > 0 && (
+          products?.map((product) => (
             <Card key={product.sku}>
               <h1>
                 {product.sku} - {product.name}

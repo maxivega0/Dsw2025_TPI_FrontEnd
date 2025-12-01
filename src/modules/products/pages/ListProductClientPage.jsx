@@ -47,9 +47,8 @@ export default function ListProductClientPage() {
     setLoading(true)
     try {
       const { data, error } = await getProducts(searchQuery || "", null, pageNumber, pageSize)
-
+      
       if (error) {
-        console.error("[v0] Error loading products:", error)
         setLoading(false)
         return
       }
@@ -87,21 +86,18 @@ export default function ListProductClientPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">{searchQuery ? `Resultados para "${searchQuery}"` : "Productos"}</h1>
 
-      {/* Products Grid */}
       <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
-      {/* Loading State */}
       {loading && (
         <div className="text-center py-4">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
       )}
 
-      {/* No Results */}
       {!loading && products.length === 0 && (
         <div className="text-center py-12 text-gray-500">
           {searchQuery ? `No se encontraron productos para "${searchQuery}"` : "No hay productos disponibles"}

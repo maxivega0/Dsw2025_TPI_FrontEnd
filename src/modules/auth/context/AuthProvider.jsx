@@ -32,7 +32,7 @@ function AuthProvider({ children }) {
   };
 
   const singup = async (username, password, email, role) => {
-    const { data } = await register(username, password, email, role);
+    const { data, user } = await register(username, password, email, role);
 
     localStorage.setItem('token', data);
     localStorage.setItem('role', user.role);

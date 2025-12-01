@@ -2,6 +2,7 @@ import { set } from 'react-hook-form';
 import Card from '../../shared/components/Card';
 import { useState, useEffect } from 'react';
 import { getProducts } from '../../products/services/list';
+import { listOrders } from '../../orders/services/listServices';
 
 function Home() {
 
@@ -13,16 +14,17 @@ function Home() {
     }, [])
   
   const loadTotals  = async () => {
-    const { data, error } = await getProducts()
-
+    const { data: products, error } =  await getProducts(null, 1, 1);
+    const { data: orders, error: orderError } =  await listOrders(null, null, 1, 1);
+    
     if (error) {
       console.error("Error loading products:", error)
       setLoading(false)
       return
     }
     
-    setTotalProductos(data.total)
-    // setTotalOrdenes(orders.totalOrders)
+    setTotalProductos(products.total)
+    setTotalOrdenes(orders.total)
   }
 
   return (
@@ -36,7 +38,7 @@ function Home() {
 
       <Card>
         <h3>Ordenes</h3>
-        <p>Cantidad: #</p>
+        <p>Cantidad: {totalOrdenes}</p>
       </Card>
     </div>
   );
