@@ -10,7 +10,8 @@ import { frontendErrorMessage } from '../helpers/backendError';
 function CreateProductForm() {
   const {
     register,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm({
     defaultValues: {
@@ -28,15 +29,38 @@ function CreateProductForm() {
 
   const onValid = async (formData) => {
     try {
-      await createProduct(formData);
+      // Ensure numeric types are numbers
+      const payload = {
+        ...formData,
+        price: Number(formData.price),
+        stock: Number(formData.stock),
+      };
+
+      await createProduct(payload);
 
       navigate('/admin/products');
     } catch (error) {
-      if (error.response?.data?.detail) {
-        const errorMessage = frontendErrorMessage[error.response.data.code];
+      // If server returns a specific code, use frontend mapping
+      if (error.response?.data?.code) {
+        const code = error.response.data.code;
+        const message = frontendErrorMessage[code] || 'Contactar a Soporte';
+        // If it's a field-specific code (e.g., 3000 for SKU), set field error.
+        if (code === 3000) {
+          setError('sku', { type: 'server', message });
+        } else {
+          setErrorBackendMessage(message);
+        }
+      }
 
-        setErrorBackendMessage(errorMessage);
-      } else {
+      // If server returns validation errors per field, map them to React Hook Form
+      if (error.response?.data?.errors) {
+        const errorsFromServer = error.response.data.errors; // { fieldName: ["msg"] }
+        Object.keys(errorsFromServer).forEach((field) => {
+          setError(field, { type: 'server', message: errorsFromServer[field].join(', ') });
+        });
+      }
+      // fallback generic message
+      if (!error.response?.data?.code && !error.response?.data?.errors) {
         setErrorBackendMessage('Contactar a Soporte');
       }
     }
@@ -60,6 +84,7 @@ function CreateProductForm() {
           error={errors.sku?.message}
           {...register('sku', {
             required: 'SKU es requerido',
+            pattern: { value: /^SKU-\d{4}$/, message: "Formato SKU inválido. Ej: 'SKU-1234'" },
           })}
         />
         <Input
@@ -67,6 +92,9 @@ function CreateProductForm() {
           error={errors.cui?.message}
           {...register('cui', {
             required: 'Código Único es requerido',
+            minLength: { value: 3, message: 'El código debe tener al menos 3 caracteres' },
+            maxLength: { value: 50, message: 'El código supera el límite de 50 caracteres' },
+            pattern: { value: /^[A-Za-z0-9\-]+$/i, message: 'El código debe ser alfanumérico' },
           })}
         />
         <Input
@@ -74,20 +102,37 @@ function CreateProductForm() {
           error={errors.name?.message}
           {...register('name', {
             required: 'Nombre es requerido',
+            minLength: { value: 3, message: 'El nombre debe tener al menos 3 caracteres' },
+            maxLength: { value: 200, message: 'El nombre supera el límite de 200 caracteres' },
           })}
         />
         <Input
           label='Descripción'
-          {...register('description')}
+          error={errors.description?.message}
+          {...register('description', {
+            maxLength: { value: 1000, message: 'La descripción supera el límite de 1000 caracteres' },
+          })}
+        />
+        <Input
+          label='Imagen URL'
+          error={errors.image?.message}
+          {...register('image', {
+            pattern: { value: /^(https?:\/\/.+\.(jpg|jpeg|png|gif|svg))$/i, message: 'La URL de la imagen es inválida o extensión no soportada' },
+          })}
         />
         <Input
           label='Precio'
           error={errors.price?.message}
           type='number'
           {...register('price', {
+            valueAsNumber: true,
+            required: 'Precio es requerido',
             min: {
-              value: 0,
-              message: 'No puede tener un precio negativo',
+              value: 0.01,
+              message: 'El precio debe ser mayor a 0',
+            },
+            validate: {
+              positive: (v) => v >= 0 || 'El precio no puede ser negativo',
             },
           })}
         />
@@ -95,14 +140,19 @@ function CreateProductForm() {
           label='Stock'
           error={errors.stock?.message}
           {...register('stock', {
+            valueAsNumber: true,
+            required: 'Stock es requerido',
             min: {
               value: 0,
-              message: 'No puede tener un stock negativo',
+              message: 'El stock no puede ser negativo',
+            },
+            validate: {
+              integer: (v) => Number.isInteger(v) || 'El stock debe ser un número entero',
             },
           })}
         />
         <div className='sm:text-end'>
-          <Button type='submit' className='w-full sm:w-fit'>Crear Producto</Button>
+          <Button type='submit' className='w-full sm:w-fit' disabled={isSubmitting}>Crear Producto</Button>
         </div>
         {errorBackendMessage && <span className='text-red-500'>{errorBackendMessage}</span>}
       </form>
