@@ -67,10 +67,10 @@ function CreateProductForm() {
         className='
           flex
           flex-col
-          gap-20
+          gap-25
           p-8
 
-          sm:gap-4
+          sm:gap-0
         '
         onSubmit={handleSubmit(onValid)}
       >

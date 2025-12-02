@@ -70,7 +70,10 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
         className="absolute inset-0 backdrop-blur-sm bg-black/40"
         onClick={handleClose}
       />
-      <div className="relative bg-white shadow-xl w-full mx-auto pb-5 max-h-[90vh] overflow-y-auto sm:rounded-lg sm:max-w-md rounded-none h-full sm:h-auto">
+      <div
+        className="
+    relative bg-white shadow-xl  w-[90%] max-w-sm mx-auto pb-5 max-h-[85vh] overflow-y-auto rounded-lg mt-20 sm:mt-0"
+      >
         <div className="flex items-center justify-between p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
           <h2
             id="login-modal-title"
@@ -88,7 +91,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <form
-          className="p-4 sm:p-6 space-y-4 flex flex-col gap-6 md:gap-0"
+          className="p-4 sm:p-6 space-y-4 flex flex-col gap-8 md:gap-0"
           onSubmit={handleSubmit(onValid)}
         >
           <Input
@@ -109,7 +112,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
             disabled={isLoading}
           />
 
-          <div className="flex flex-col gap-3 pt-8 sm:pt-12">
+          <div className="flex flex-col gap-3 pt-8 md:pt-0">
             <Button type="submit" fullWidth disabled={isLoading}>
               {isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}
             </Button>

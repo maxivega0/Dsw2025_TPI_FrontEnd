@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../shared/components/Button";
 import Card from "../../shared/components/Card";
 import { getProducts } from "../services/list";
+import { RiAddBoxLine } from "react-icons/ri";
 import { set } from "react-hook-form";
 
 const productStatus = {
@@ -83,7 +84,10 @@ function ListProductsPage() {
       <Card>
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-3xl">Productos</h1>
-          <Button className="h-11 w-11 rounded-2xl sm:hidden">
+          <Button
+            onClick={() => navigate("/admin/products/create")}
+            className="h-11 w-11 rounded-2xl sm:hidden"
+          >
             <svg
               viewBox="0 0 20 20"
               fill="none"

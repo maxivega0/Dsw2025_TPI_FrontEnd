@@ -97,7 +97,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <form
-          className="p-4 sm:p-6 space-y-4 flex flex-col gap-4"
+          className="p-4 sm:p-6 space-y-4 flex flex-col gap-8 md:gap-0"
           onSubmit={handleSubmit(onValid)}
         >
           <Input
@@ -165,7 +165,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
             </p>
           )}
 
-          <div className="flex flex-col gap-3 pt-4">
+          <div className="flex flex-col gap-3 pt-16 sm:pt-0">
             <Button type="submit" fullWidth disabled={isLoading}>
               {isLoading ? "Registrando..." : "Registrar Usuario"}
             </Button>
