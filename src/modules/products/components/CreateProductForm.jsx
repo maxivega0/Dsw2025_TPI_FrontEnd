@@ -5,7 +5,6 @@ import Card from '../../shared/components/Card';
 import Input from '../../shared/components/Input';
 import { createProduct } from '../services/create';
 import { useState } from 'react';
-import { frontendErrorMessage } from '../helpers/backendError';
 
 function CreateProductForm() {
   const {
@@ -34,30 +33,14 @@ function CreateProductForm() {
         price: Number(formData.price),
         stock: Number(formData.stock),
       };
+      // Ensure SKU is uppercase to comply with the required format (e.g. GHI789)
+      if (payload.sku) payload.sku = String(payload.sku).toUpperCase();
 
       await createProduct(payload);
 
       navigate('/admin/products');
     } catch (error) {
-      if (error.response?.data?.code) {
-        const code = error.response.data.code;
-        const message = frontendErrorMessage[code] || 'Contactar a Soporte';
-        if (code === 3000) {
-          setError('sku', { type: 'server', message });
-        } else {
-          setErrorBackendMessage(message);
-        }
-      }
-
-      if (error.response?.data?.errors) {
-        const errorsFromServer = error.response.data.errors;
-        Object.keys(errorsFromServer).forEach((field) => {
-          setError(field, { type: 'server', message: errorsFromServer[field].join(', ') });
-        });
-      }
-      if (!error.response?.data?.code && !error.response?.data?.errors) {
-        setErrorBackendMessage('Contactar a Soporte');
-      }
+      setErrorBackendMessage([error.response?.data?.error || "Error al procesar la orden"]);
     }
   };
 
@@ -69,7 +52,6 @@ function CreateProductForm() {
           flex-col
           gap-25
           p-8
-
           sm:gap-0
         '
         onSubmit={handleSubmit(onValid)}
@@ -79,7 +61,7 @@ function CreateProductForm() {
           error={errors.sku?.message}
           {...register('sku', {
             required: 'SKU es requerido',
-            pattern: { value: /^SKU-\d{4}$/, message: "Formato SKU inválido. Ej: 'SKU-1234'" },
+            pattern: { value: /^[A-Z]{3}\d{3}$/, message: "Formato SKU inválido. Ej: 'GHI789'" },
           })}
         />
         <Input
@@ -119,6 +101,7 @@ function CreateProductForm() {
           label='Precio'
           error={errors.price?.message}
           type='number'
+          step='0.01'
           {...register('price', {
             valueAsNumber: true,
             required: 'Precio es requerido',
@@ -127,7 +110,7 @@ function CreateProductForm() {
               message: 'El precio debe ser mayor a 0',
             },
             validate: {
-              positive: (v) => v >= 0 || 'El precio no puede ser negativo',
+              positive: (v) => v >= 0.01 || 'El precio no puede ser negativo',
             },
           })}
         />
