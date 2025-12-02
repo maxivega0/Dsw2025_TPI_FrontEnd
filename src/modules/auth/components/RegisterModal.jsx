@@ -54,7 +54,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
       }, 2000);
     } catch (error) {
       console.error("Error en registro:", error);
-      setErrorMessage(error.response?.data || "Error inesperado al registrar");
+      setErrorMessage(error.response?.data?.error || "Error inesperado al registrar");
     } finally {
       setIsLoading(false);
     }
