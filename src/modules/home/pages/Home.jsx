@@ -1,8 +1,8 @@
-import { set } from "react-hook-form";
-import Card from "../../shared/components/Card";
-import { useState, useEffect } from "react";
-import { getProducts } from "../../products/services/list";
-import { listOrders } from "../../orders/services/listServices";
+import { set } from 'react-hook-form';
+import Card from '../../shared/components/Card';
+import { useState, useEffect } from 'react';
+import { getProducts } from '../../products/services/list';
+import { listOrders } from '../../orders/services/listServices';
 
 function Home() {
   const [totalProductos, setTotalProductos] = useState([]);
@@ -18,12 +18,13 @@ function Home() {
       null,
       null,
       1,
-      1
+      1,
     );
 
     if (error) {
-      console.error("Error loading products:", error);
+      console.error('Error loading products:', error);
       setLoading(false);
+
       return;
     }
 

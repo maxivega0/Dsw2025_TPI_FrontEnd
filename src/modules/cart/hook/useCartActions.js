@@ -14,8 +14,8 @@ export const useCartActions = () => {
         currentUnitPrice: product.currentUnitPrice,
         sku: product.sku,
         image: product.image,
-        quantity: quantity
-      }
+        quantity: quantity,
+      },
     });
   };
 
@@ -42,6 +42,6 @@ export const useCartActions = () => {
     removeFromCart,
     updateQuantity,
     clearCart,
-    getCartItemCount
+    getCartItemCount,
   };
 };

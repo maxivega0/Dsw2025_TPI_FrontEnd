@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
-import useAuth from "../../../auth/hook/useAuth";
-import Button from "../../../shared/components/Button";
-import { RiAppsLine } from "react-icons/ri";
-import { IoSearchOutline } from "react-icons/io5";
-import ClientNav from "../../../shared/components/ClientNav";
-import LoginModal from "../../../auth/components/LoginModal";
-import RegisterModal from "../../../auth/components/RegisterModal";
-import { useCartActions } from "../../../cart/hook/useCartActions";
+import { useState } from 'react';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import useAuth from '../../../auth/hook/useAuth';
+import Button from '../../../shared/components/Button';
+import { RiAppsLine } from 'react-icons/ri';
+import { IoSearchOutline } from 'react-icons/io5';
+import ClientNav from '../../../shared/components/ClientNav';
+import LoginModal from '../../../auth/components/LoginModal';
+import RegisterModal from '../../../auth/components/RegisterModal';
+import { useCartActions } from '../../../cart/hook/useCartActions';
 
 function NavBar() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -15,7 +15,7 @@ function NavBar() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(
-    searchParams.get("search") || ""
+    searchParams.get('search') || '',
   );
 
   const navigate = useNavigate();
@@ -25,38 +25,41 @@ function NavBar() {
   const logout = () => {
     clearCart();
     singout();
-    navigate("/");
+    navigate('/');
   };
 
   const handleLoginSuccess = () => {
     setOpenMenu(false);
-    console.log("Login exitoso desde navbar");
-    navigate("/admin/home");
+    console.log('Login exitoso desde navbar');
+    navigate('/admin/home');
   };
 
   const handleRegisterSuccess = () => {
     setOpenMenu(false);
-    console.log("Registro exitoso desde navbar");
+    console.log('Registro exitoso desde navbar');
   };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
+
     setSearchValue(value);
   };
 
   const handleSearchClick = () => {
     const params = new URLSearchParams(searchParams);
+
     if (searchValue.trim()) {
-      params.set("search", searchValue.trim());
+      params.set('search', searchValue.trim());
     } else {
-      params.delete("search");
+      params.delete('search');
     }
-    params.delete("pageNumber");
+
+    params.delete('pageNumber');
     setSearchParams(params);
   };
 
   const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleSearchClick();
     }
   };
@@ -65,7 +68,7 @@ function NavBar() {
     if (isAuthenticated) {
       return (
         <Button
-          className={`${mobile ? "block w-full" : ""}`}
+          className={`${mobile ? 'block w-full' : ''}`}
           onClick={logout}
           variant="secondary"
         >
@@ -74,13 +77,14 @@ function NavBar() {
       );
     } else {
       return (
-        <div className={`flex ${mobile ? "flex-col gap-2" : "gap-2"}`}>
+        <div className={`flex ${mobile ? 'flex-col gap-2' : 'gap-2'}`}>
           <Button
             onClick={() => {
               setIsLoginModalOpen(true);
+
               if (mobile) setOpenMenu(false);
             }}
-            className={mobile ? "w-full" : ""}
+            className={mobile ? 'w-full' : ''}
           >
             Iniciar Sesión
           </Button>
@@ -88,9 +92,10 @@ function NavBar() {
             variant="secondary"
             onClick={() => {
               setIsRegisterModalOpen(true);
+
               if (mobile) setOpenMenu(false);
             }}
-            className={mobile ? "w-full" : ""}
+            className={mobile ? 'w-full' : ''}
           >
             Registrarse
           </Button>
@@ -103,13 +108,13 @@ function NavBar() {
     fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50
     transform transition-transform duration-300 ease-in-out
     p-4 flex flex-col gap-4
-    ${openMenu ? "translate-x-0" : "translate-x-full"}
+    ${openMenu ? 'translate-x-0' : 'translate-x-full'}
   `;
 
   const overlayStyles = `
     fixed inset-0 z-40 backdrop-blur-sm
     transition-opacity duration-300
-    ${openMenu ? "opacity-100" : "opacity-0 pointer-events-none"}
+    ${openMenu ? 'opacity-100' : 'opacity-0 pointer-events-none'}
   `;
 
   return (

@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Input from "../../shared/components/Input";
-import Select from "../../shared/components/Select";
-import Button from "../../shared/components/Button";
-import useAuth from "../hook/useAuth";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import Input from '../../shared/components/Input';
+import Select from '../../shared/components/Select';
+import Button from '../../shared/components/Button';
+import useAuth from '../hook/useAuth';
 
 function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const {
     register,
     watch,
@@ -16,11 +16,11 @@ function RegisterForm() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: "",
-      password: "",
-      confirmPassword: "",
-      email: "",
-      role: "Customer",
+      username: '',
+      password: '',
+      confirmPassword: '',
+      email: '',
+      role: 'Customer',
     },
   });
 
@@ -31,29 +31,29 @@ function RegisterForm() {
   const onValid = async (formData) => {
 
     setIsLoading(true);
-    setErrorMessage("");
+    setErrorMessage('');
 
     try {
       await singup(
         formData.username,
         formData.email,
         formData.password,
-        formData.role
+        formData.role,
       );
 
       reset();
-      setErrorMessage("");
+      setErrorMessage('');
 
-      if (formData.role == "Customer") {
-        navigate("/");
+      if (formData.role == 'Customer') {
+        navigate('/');
       } else {
-        navigate("/admin/home");
+        navigate('/admin/home');
       }
     } catch (error) {
       if (error?.response?.data?.error) {
         setErrorMessage([error?.response?.data?.error]);
       } else {
-        setErrorMessage("Llame a soporte");
+        setErrorMessage('Llame a soporte');
       }
     } finally {
       setIsLoading(false);
@@ -69,7 +69,7 @@ function RegisterForm() {
         bg-white
         p-8
         sm:p-6
-        sm:w-md 
+        sm:w-md
         sm:gap-4
         sm:rounded-lg
         sm:shadow-lg
@@ -78,11 +78,11 @@ function RegisterForm() {
     >
       <Input
         label="Usuario"
-        {...register("username", {
-          required: "Usuario es obligatorio",
+        {...register('username', {
+          required: 'Usuario es obligatorio',
           minLength: {
             value: 3,
-            message: "El usuario debe tener al menos 3 caracteres",
+            message: 'El usuario debe tener al menos 3 caracteres',
           },
         })}
         error={errors.username?.message}
@@ -90,11 +90,11 @@ function RegisterForm() {
       />
       <Input
         label="Email"
-        {...register("email", {
-          required: "Email es obligatorio",
+        {...register('email', {
+          required: 'Email es obligatorio',
           pattern: {
             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: "El email no tiene un formato válido",
+            message: 'El email no tiene un formato válido',
           },
         })}
         type="email"
@@ -103,24 +103,24 @@ function RegisterForm() {
       />
       <Input
         label="Contraseña"
-        {...register("password", {
-          required: "Contraseña es obligatoria",
+        {...register('password', {
+          required: 'Contraseña es obligatoria',
           minLength: {
             value: 6,
-            message: "La contraseña debe tener al menos 6 caracteres",
+            message: 'La contraseña debe tener al menos 6 caracteres',
           },
           validate: {
             hasUpperCase: (v) =>
               /[A-Z]/.test(v) ||
-              "La contraseña debe contener al menos una letra mayúscula",
+              'La contraseña debe contener al menos una letra mayúscula',
             hasLowerCase: (v) =>
               /[a-z]/.test(v) ||
-              "La contraseña debe contener al menos una letra minúscula",
+              'La contraseña debe contener al menos una letra minúscula',
             hasDigit: (v) =>
-              /\d/.test(v) || "La contraseña debe contener al menos un número",
+              /\d/.test(v) || 'La contraseña debe contener al menos un número',
             hasSpecialChar: (v) =>
               /[^A-Za-z0-9]/.test(v) ||
-              "La contraseña debe contener al menos un caracter especial",
+              'La contraseña debe contener al menos un caracter especial',
           },
         })}
         type="password"
@@ -129,10 +129,10 @@ function RegisterForm() {
       />
       <Input
         label="Confirmar Contraseña"
-        {...register("confirmPassword", {
-          required: "Confirmar Contraseña es obligatoria",
+        {...register('confirmPassword', {
+          required: 'Confirmar Contraseña es obligatoria',
           validate: (value) =>
-            value === watch("password") || "Las contraseñas no coinciden",
+            value === watch('password') || 'Las contraseñas no coinciden',
         })}
         type="password"
         error={errors.confirmPassword?.message}
@@ -140,8 +140,8 @@ function RegisterForm() {
       />
       <Select
         label="Rol"
-        {...register("role", {
-          required: "Rol es obligatorio",
+        {...register('role', {
+          required: 'Rol es obligatorio',
         })}
         disabled={isLoading}
       >
@@ -150,9 +150,9 @@ function RegisterForm() {
       </Select>
 
       <Button type="submit">
-        {isLoading ? "Registrando Usuario..." : "Registrar Usuario"}
+        {isLoading ? 'Registrando Usuario...' : 'Registrar Usuario'}
       </Button>
-      <Button variant="secondary" onClick={() => navigate("/login")}>
+      <Button variant="secondary" onClick={() => navigate('/login')}>
         Iniciar Sesion
       </Button>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}

@@ -1,15 +1,15 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../../shared/components/Button";
-import Card from "../../shared/components/Card";
-import { getProducts } from "../services/list";
-import { RiAddBoxLine } from "react-icons/ri";
-import { set } from "react-hook-form";
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../shared/components/Button';
+import Card from '../../shared/components/Card';
+import { getProducts } from '../services/list';
+import { RiAddBoxLine } from 'react-icons/ri';
+import { set } from 'react-hook-form';
 
 const productStatus = {
-  ALL: "all",
-  ENABLED: "enabled",
-  DISABLED: "disabled",
+  ALL: 'all',
+  ENABLED: 'enabled',
+  DISABLED: 'disabled',
 };
 
 function ListProductsPage() {
@@ -17,8 +17,8 @@ function ListProductsPage() {
   const topRef = useRef(null);
 
   const [products, setProducts] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [status, setStatus] = useState(productStatus.ALL);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -33,15 +33,17 @@ function ListProductsPage() {
         searchTerm,
         status,
         pageNumber,
-        pageSize
+        pageSize,
       );
 
       if (error) {
         setLoading(false);
+
         return;
       }
 
       const loadedProducts = data.productItems || [];
+
       setTotal(data.total || 0);
       setProducts(loadedProducts);
     } catch (error) {
@@ -59,9 +61,9 @@ function ListProductsPage() {
 
   useEffect(() => {
     if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [pageNumber, pageSize, searchTerm, status]);
 
@@ -85,7 +87,7 @@ function ListProductsPage() {
         <div className="flex justify-between items-center mb-3">
           <h1 className="text-3xl">Productos</h1>
           <Button
-            onClick={() => navigate("/admin/products/create")}
+            onClick={() => navigate('/admin/products/create')}
             className="h-11 w-11 rounded-2xl sm:hidden"
           >
             <svg
@@ -100,22 +102,22 @@ function ListProductsPage() {
                 strokeLinejoin="round"
               ></g>
               <g id="SVGRepo_iconCarrier">
-                {" "}
+                {' '}
                 <path
                   d="M5 11C4.44772 11 4 10.5523 4 10C4 9.44772 4.44772 9 5 9H15C15.5523 9 16 9.44772 16 10C16 10.5523 15.5523 11 15 11H5Z"
                   fill="#000000"
-                ></path>{" "}
+                ></path>{' '}
                 <path
                   d="M9 5C9 4.44772 9.44772 4 10 4C10.5523 4 11 4.44772 11 5V15C11 15.5523 10.5523 16 10 16C9.44772 16 9 15.5523 9 15V5Z"
                   fill="#000000"
-                ></path>{" "}
+                ></path>{' '}
               </g>
             </svg>
           </Button>
 
           <Button
             className="hidden sm:block"
-            onClick={() => navigate("/admin/products/create")}
+            onClick={() => navigate('/admin/products/create')}
           >
             Crear Producto
           </Button>
@@ -143,14 +145,14 @@ function ListProductsPage() {
                   strokeLinejoin="round"
                 ></g>
                 <g id="SVGRepo_iconCarrier">
-                  {" "}
+                  {' '}
                   <path
                     d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
                     stroke="#000000"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  ></path>{" "}
+                  ></path>{' '}
                 </g>
               </svg>
             </Button>
@@ -177,7 +179,7 @@ function ListProductsPage() {
           <div className="text-center py-12 text-gray-500">
             {searchTerm
               ? `No se encontraron productos para "${searchTerm}"`
-              : "No hay productos disponibles"}
+              : 'No hay productos disponibles'}
           </div>
         )}
         {products.length > 0 &&
@@ -187,8 +189,8 @@ function ListProductsPage() {
                 {product.sku} - {product.name}
               </h1>
               <p className="text-base">
-                Stock: {product.stockQuantity} - ${product.currentUnitPrice} -{" "}
-                {product.isActive ? "Activado" : "Desactivado"}
+                Stock: {product.stockQuantity} - ${product.currentUnitPrice} -{' '}
+                {product.isActive ? 'Activado' : 'Desactivado'}
               </p>
             </Card>
           ))}

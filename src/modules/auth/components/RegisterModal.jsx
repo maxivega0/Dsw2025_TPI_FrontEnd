@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Input from "../../shared/components/Input";
-import Button from "../../shared/components/Button";
-import { CgCloseR } from "react-icons/cg";
-import useAuth from "../hook/useAuth";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import Input from '../../shared/components/Input';
+import Button from '../../shared/components/Button';
+import { CgCloseR } from 'react-icons/cg';
+import useAuth from '../hook/useAuth';
 
 function RegisterModal({ isOpen, onClose, onSuccess }) {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
 
   const {
     register: registerForm,
@@ -19,42 +19,44 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
     watch,
   } = useForm({
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
   });
 
   const navigate = useNavigate();
-  const password = watch("password");
+  const password = watch('password');
   const { singup } = useAuth();
 
   const onValid = async (formData) => {
     setIsLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
+    setErrorMessage('');
+    setSuccessMessage('');
 
     try {
       const { data, error } = await singup(
         formData.username,
         formData.email,
-        formData.password
+        formData.password,
       );
 
-      setSuccessMessage("¡Usuario registrado exitosamente!");
+      setSuccessMessage('¡Usuario registrado exitosamente!');
 
       setTimeout(() => {
         reset();
-        setSuccessMessage("");
+        setSuccessMessage('');
+
         if (onSuccess) {
           onSuccess();
         }
+
         onClose();
       }, 2000);
     } catch (error) {
-      console.error("Error en registro:", error);
-      setErrorMessage(error.response?.data?.error || "Error inesperado al registrar");
+      console.error('Error en registro:', error);
+      setErrorMessage(error.response?.data?.error || 'Error inesperado al registrar');
     } finally {
       setIsLoading(false);
     }
@@ -62,8 +64,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
   const handleClose = () => {
     reset();
-    setErrorMessage("");
-    setSuccessMessage("");
+    setErrorMessage('');
+    setSuccessMessage('');
     onClose();
   };
 
@@ -102,11 +104,11 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
         >
           <Input
             label="Usuario"
-            {...registerForm("username", {
-              required: "Usuario es obligatorio",
+            {...registerForm('username', {
+              required: 'Usuario es obligatorio',
               minLength: {
                 value: 3,
-                message: "El usuario debe tener al menos 3 caracteres",
+                message: 'El usuario debe tener al menos 3 caracteres',
               },
             })}
             error={errors.username?.message}
@@ -116,8 +118,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
           <Input
             label="Email"
             type="email"
-            {...registerForm("email", {
-              required: "Email es obligatorio",
+            {...registerForm('email', {
+              required: 'Email es obligatorio',
               pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'El email no tiene un formato válido' },
             })}
             error={errors.email?.message}
@@ -126,8 +128,8 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
           <Input
             label="Contraseña"
-            {...registerForm("password", {
-              required: "Contraseña es obligatoria",
+            {...registerForm('password', {
+              required: 'Contraseña es obligatoria',
               minLength: { value: 6, message: 'La contraseña debe tener al menos 6 caracteres' },
               validate: {
                 hasUpperCase: (v) => /[A-Z]/.test(v) || 'La contraseña debe contener al menos una letra mayúscula',
@@ -143,10 +145,10 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
           <Input
             label="Confirmar Contraseña"
-            {...registerForm("confirmPassword", {
-              required: "Confirma tu contraseña",
+            {...registerForm('confirmPassword', {
+              required: 'Confirma tu contraseña',
               validate: (value) =>
-                value === password || "Las contraseñas no coinciden",
+                value === password || 'Las contraseñas no coinciden',
             })}
             type="password"
             error={errors.confirmPassword?.message}
@@ -167,7 +169,7 @@ function RegisterModal({ isOpen, onClose, onSuccess }) {
 
           <div className="flex flex-col gap-3 pt-16 sm:pt-0">
             <Button type="submit" fullWidth disabled={isLoading}>
-              {isLoading ? "Registrando..." : "Registrar Usuario"}
+              {isLoading ? 'Registrando...' : 'Registrar Usuario'}
             </Button>
           </div>
         </form>

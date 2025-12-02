@@ -1,5 +1,5 @@
-import Card from "../../shared/components/Card";
-import { FaRegTrashAlt } from "react-icons/fa";
+import Card from '../../shared/components/Card';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 function CartCard({ item, onUpdateQuantity, onRemove }) {
   const handleDecrement = () => {
@@ -19,7 +19,7 @@ function CartCard({ item, onUpdateQuantity, onRemove }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-1">
           <img
-            src={item.image || ""}
+            src={item.image || ''}
             alt={item.name}
             className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
           />

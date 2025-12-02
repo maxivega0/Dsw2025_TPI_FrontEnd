@@ -1,5 +1,5 @@
-import { Navigate } from "react-router-dom";
-import useAuth from "../../auth/hook/useAuth";
+import { Navigate } from 'react-router-dom';
+import useAuth from '../../auth/hook/useAuth';
 
 function PublicRoute({ children }) {
   const { isAuthenticated } = useAuth();
@@ -7,12 +7,12 @@ function PublicRoute({ children }) {
 
   if (isAuthenticated && role === 'Admin') {
     return <Navigate to="/admin/home" />;
-  }else{
-    if (isAuthenticated && role !== 'Admin'){
+  } else {
+    if (isAuthenticated && role !== 'Admin') {
       return <Navigate to="/" />;
     }
   }
-  
+
   return children;
 }
 

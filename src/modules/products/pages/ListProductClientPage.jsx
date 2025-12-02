@@ -1,97 +1,99 @@
-import { useState, useEffect, useRef } from "react"
-import { useSearchParams } from "react-router-dom"
-import { getProducts } from "../services/clientList"
-import ProductCard from "../components/ProductCard"
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { getProducts } from '../services/clientList';
+import ProductCard from '../components/ProductCard';
 
 export default function ListProductClientPage() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [searchParams] = useSearchParams()
-  const gridRef = useRef(null)
-  const [itemsPerRow, setItemsPerRow] = useState(4)
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+  const gridRef = useRef(null);
+  const [itemsPerRow, setItemsPerRow] = useState(4);
 
-  const [pageNumber, setPageNumber] = useState(1)
-  const [pageSize, setPageSize] = useState(8)
-  const [total, setTotal] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
+  const [total, setTotal] = useState(0);
 
-  const searchQuery = searchParams.get("search") || ""
+  const searchQuery = searchParams.get('search') || '';
 
   useEffect(() => {
     const detectItemsPerRow = () => {
-      if (!gridRef.current) return
+      if (!gridRef.current) return;
 
-      const gridComputedStyle = window.getComputedStyle(gridRef.current)
-      const gridTemplateColumns = gridComputedStyle.gridTemplateColumns
-      const columnCount = gridTemplateColumns.split(" ").length
+      const gridComputedStyle = window.getComputedStyle(gridRef.current);
+      const gridTemplateColumns = gridComputedStyle.gridTemplateColumns;
+      const columnCount = gridTemplateColumns.split(' ').length;
 
-      setItemsPerRow(columnCount)
-    }
+      setItemsPerRow(columnCount);
+    };
 
-    detectItemsPerRow()
-    window.addEventListener("resize", detectItemsPerRow)
+    detectItemsPerRow();
+    window.addEventListener('resize', detectItemsPerRow);
 
-    return () => window.removeEventListener("resize", detectItemsPerRow)
-  }, [])
-
-  useEffect(() => {
-    setPageNumber(1)
-    setProducts([])
-  }, [searchQuery])
+    return () => window.removeEventListener('resize', detectItemsPerRow);
+  }, []);
 
   useEffect(() => {
-    loadProducts()
-  }, [pageNumber, pageSize, searchQuery])
+    setPageNumber(1);
+    setProducts([]);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    loadProducts();
+  }, [pageNumber, pageSize, searchQuery]);
 
   useEffect(() => {
     if (gridRef.current) {
-      gridRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+      gridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [pageNumber, pageSize, searchQuery])
+  }, [pageNumber, pageSize, searchQuery]);
 
   const loadProducts = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const { data, error } = await getProducts(searchQuery || "", null, pageNumber, pageSize)
-      
+      const { data, error } = await getProducts(searchQuery || '', null, pageNumber, pageSize);
+
       if (error) {
-        setLoading(false)
-        return
+        setLoading(false);
+
+        return;
       }
 
-      const loadedProducts = data.productItems || []
-      setProducts(loadedProducts)
-      setTotal(data.total || 0)
-    } catch (error) {
-      console.error("[v0] Error loading products:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+      const loadedProducts = data.productItems || [];
 
-  const totalPages = Math.ceil(total / pageSize)
+      setProducts(loadedProducts);
+      setTotal(data.total || 0);
+    } catch (error) {
+      console.error('[v0] Error loading products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalPages = Math.ceil(total / pageSize);
 
   const handlePreviousPage = () => {
     if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1)
+      setPageNumber(pageNumber - 1);
     }
-  }
+  };
 
   const handleNextPage = () => {
     if (pageNumber < totalPages) {
-      setPageNumber(pageNumber + 1)
+      setPageNumber(pageNumber + 1);
     }
-  }
+  };
 
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(Number(newPageSize))
-    setPageNumber(1)
-  }
+    setPageSize(Number(newPageSize));
+    setPageNumber(1);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">{searchQuery ? `Resultados para "${searchQuery}"` : "Productos"}</h1>
+      <h1 className="text-3xl font-bold mb-8">{searchQuery ? `Resultados para "${searchQuery}"` : 'Productos'}</h1>
 
       <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {products.map((product) => (
@@ -107,7 +109,7 @@ export default function ListProductClientPage() {
 
       {!loading && products.length === 0 && (
         <div className="text-center py-12 text-gray-500">
-          {searchQuery ? `No se encontraron productos para "${searchQuery}"` : "No hay productos disponibles"}
+          {searchQuery ? `No se encontraron productos para "${searchQuery}"` : 'No hay productos disponibles'}
         </div>
       )}
 
@@ -162,5 +164,5 @@ export default function ListProductClientPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

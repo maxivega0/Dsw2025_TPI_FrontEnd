@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useCartActions } from "../../cart/hook/useCartActions";
+import { useState } from 'react';
+import { useCartActions } from '../../cart/hook/useCartActions';
 
 export default function ProductCard({ product }) {
   const [quantity, setQuantity] = useState(0);
@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative w-full aspect-square bg-gray-200">
         <img
-          src={product.image || "/placeholder.svg?height=300&width=300"}
+          src={product.image || '/placeholder.svg?height=300&width=300'}
           alt={product.name}
           className="w-full h-full object-cover"
         />

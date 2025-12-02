@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Input from "../../shared/components/Input";
-import Button from "../../shared/components/Button";
-import useAuth from "../hook/useAuth";
-import { CgCloseR } from "react-icons/cg";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import Input from '../../shared/components/Input';
+import Button from '../../shared/components/Button';
+import useAuth from '../hook/useAuth';
+import { CgCloseR } from 'react-icons/cg';
 
 function LoginModal({ isOpen, onClose, onSuccess }) {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -15,26 +15,29 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ defaultValues: { username: "", password: "" } });
+  } = useForm({ defaultValues: { username: '', password: '' } });
 
   const navigate = useNavigate();
   const { singin } = useAuth();
 
   const onValid = async (formData) => {
     setIsLoading(true);
-    setErrorMessage("");
+    setErrorMessage('');
 
     try {
       await singin(formData.username, formData.password);
 
       reset();
-      setErrorMessage("");
+      setErrorMessage('');
 
       if (onSuccess) {
-        const role = localStorage.getItem("role");
+        const role = localStorage.getItem('role');
+
         onSuccess();
-        if (role == "Admin") {
-          navigate("/admin/home");
+
+        if (role == 'Admin') {
+          navigate('/admin/home');
+
           return;
         }
       }
@@ -44,7 +47,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
       if (error?.response?.data?.error) {
         setErrorMessage([error?.response?.data?.error]);
       } else {
-        setErrorMessage("Error al iniciar sesión. Intente nuevamente.");
+        setErrorMessage('Error al iniciar sesión. Intente nuevamente.');
       }
     } finally {
       setIsLoading(false);
@@ -53,7 +56,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
 
   const handleClose = () => {
     reset();
-    setErrorMessage("");
+    setErrorMessage('');
     onClose();
   };
 
@@ -96,16 +99,16 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
         >
           <Input
             label="Usuario"
-            {...register("username", {
-              required: "Usuario es obligatorio",
+            {...register('username', {
+              required: 'Usuario es obligatorio',
             })}
             error={errors.username?.message}
             disabled={isLoading}
           />
           <Input
             label="Contraseña"
-            {...register("password", {
-              required: "Contraseña es obligatoria",
+            {...register('password', {
+              required: 'Contraseña es obligatoria',
             })}
             type="password"
             error={errors.password?.message}
@@ -114,7 +117,7 @@ function LoginModal({ isOpen, onClose, onSuccess }) {
 
           <div className="flex flex-col gap-3 pt-8 md:pt-0">
             <Button type="submit" fullWidth disabled={isLoading}>
-              {isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}
+              {isLoading ? 'Iniciando Sesión...' : 'Iniciar Sesión'}
             </Button>
           </div>
         </form>

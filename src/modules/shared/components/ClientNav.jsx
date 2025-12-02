@@ -1,5 +1,5 @@
-import { NavLink } from "react-router-dom";
-import { useCartActions } from "../../cart/hook/useCartActions";
+import { NavLink } from 'react-router-dom';
+import { useCartActions } from '../../cart/hook/useCartActions';
 
 function ClientNav({ setOpenMenu, setMobileView }) {
   const { getCartItemCount } = useCartActions();
@@ -7,7 +7,7 @@ function ClientNav({ setOpenMenu, setMobileView }) {
   const getLinkStyles = ({ isActive }) =>
     `
       w-full block p-2 rounded-xl transition hover:bg-gray-100
-      ${isActive ? "bg-gray-200 hover:bg-purple-100 " : ""}
+      ${isActive ? 'bg-gray-200 hover:bg-purple-100 ' : ''}
     `;
 
   return (

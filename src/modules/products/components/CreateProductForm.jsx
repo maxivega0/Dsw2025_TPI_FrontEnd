@@ -33,6 +33,7 @@ function CreateProductForm() {
         price: Number(formData.price),
         stock: Number(formData.stock),
       };
+
       // Ensure SKU is uppercase to comply with the required format (e.g. GHI789)
       if (payload.sku) payload.sku = String(payload.sku).toUpperCase();
 
@@ -40,7 +41,7 @@ function CreateProductForm() {
 
       navigate('/admin/products');
     } catch (error) {
-      setErrorBackendMessage([error.response?.data?.error || "Error al procesar la orden"]);
+      setErrorBackendMessage([error.response?.data?.error || 'Error al procesar la orden']);
     }
   };
 

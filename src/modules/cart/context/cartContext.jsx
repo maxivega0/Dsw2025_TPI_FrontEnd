@@ -1,17 +1,17 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
+import { createContext, useContext, useReducer, useEffect } from 'react';
 
 const CartContext = createContext();
 
-const ADD_TO_CART = "ADD_TO_CART";
-const REMOVE_FROM_CART = "REMOVE_FROM_CART";
-const UPDATE_QUANTITY = "UPDATE_QUANTITY";
-const CLEAR_CART = "CLEAR_CART";
+const ADD_TO_CART = 'ADD_TO_CART';
+const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+const UPDATE_QUANTITY = 'UPDATE_QUANTITY';
+const CLEAR_CART = 'CLEAR_CART';
 
 function cartReducer(state, action) {
   switch (action.type) {
     case ADD_TO_CART: {
       const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.id,
       );
 
       let newItems;
@@ -20,8 +20,9 @@ function cartReducer(state, action) {
         newItems = state.items.map((item) =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + action.payload.quantity }
-            : item
+            : item,
         );
+
         return calculateTotals({ ...state, items: newItems });
       } else {
         newItems = [...state.items, action.payload];
@@ -32,8 +33,9 @@ function cartReducer(state, action) {
 
     case REMOVE_FROM_CART: {
       const filteredItems = state.items.filter(
-        (item) => item.id !== action.payload
+        (item) => item.id !== action.payload,
       );
+
       return calculateTotals({ ...state, items: filteredItems });
     }
 
@@ -42,7 +44,7 @@ function cartReducer(state, action) {
         .map((item) =>
           item.id === action.payload.productId
             ? { ...item, quantity: Math.max(0, action.payload.quantity) }
-            : item
+            : item,
         )
         .filter((item) => item.quantity > 0);
 
@@ -60,7 +62,7 @@ function cartReducer(state, action) {
 function calculateTotals(cartState) {
   const total = cartState.items.reduce(
     (sum, item) => sum + item.currentUnitPrice * item.quantity,
-    0
+    0,
   );
 
   const itemCount = cartState.items.length;
@@ -74,7 +76,8 @@ function calculateTotals(cartState) {
 
 function initCart() {
   try {
-    const saved = localStorage.getItem("cart");
+    const saved = localStorage.getItem('cart');
+
     if (!saved) return { items: [], total: 0, itemCount: 0 };
 
     const parsed = JSON.parse(saved);
@@ -91,7 +94,7 @@ export function CartProvider({ children }) {
   const [cart, dispatch] = useReducer(cartReducer, undefined, initCart);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
   return (

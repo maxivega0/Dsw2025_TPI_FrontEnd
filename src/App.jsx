@@ -32,7 +32,7 @@ function App() {
     },
     {
       path: '/login',
-      element:( 
+      element:(
         <PublicRoute>
           <LoginPage/>
         </PublicRoute>
@@ -40,19 +40,19 @@ function App() {
     },
     {
       path: '/register',
-      element: 
+      element:
       (
         <PublicRoute>
           <RegisterPage/>
         </PublicRoute>
-      )
+      ),
     },
     {
       path: '/admin',
       element: (
-         <ProtectedRoute>
+        <ProtectedRoute>
           <Dashboard />
-         </ProtectedRoute>
+        </ProtectedRoute>
       ),
       children: [
         {

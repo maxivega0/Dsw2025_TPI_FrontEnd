@@ -1,20 +1,20 @@
-import Card from "../../shared/components/Card";
-import { listOrders } from "../services/listServices";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
-import Button from "../../shared/components/Button";
+import Card from '../../shared/components/Card';
+import { listOrders } from '../services/listServices';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import Button from '../../shared/components/Button';
 
 const Orderstatus = {
-  ALL: "all",
-  ENABLED: "enabled",
-  DISABLED: "disabled",
+  ALL: 'all',
+  ENABLED: 'enabled',
+  DISABLED: 'disabled',
 };
 
 function ListOrdersPage() {
   const navigate = useNavigate();
 
-  const [searchInput, setSearchInput] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [status, setStatus] = useState(Orderstatus.ALL);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -32,7 +32,7 @@ function ListOrdersPage() {
         searchTerm,
         status,
         pageNumber,
-        pageSize
+        pageSize,
       );
 
       if (error) throw error;
@@ -52,9 +52,9 @@ function ListOrdersPage() {
 
   useEffect(() => {
     if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [pageNumber, pageSize, searchTerm, status]);
 
@@ -90,15 +90,15 @@ function ListOrdersPage() {
                 strokeLinejoin="round"
               ></g>
               <g id="SVGRepo_iconCarrier">
-                {" "}
+                {' '}
                 <path
                   d="M5 11C4.44772 11 4 10.5523 4 10C4 9.44772 4.44772 9 5 9H15C15.5523 9 16 9.44772 16 10C16 10.5523 15.5523 11 15 11H5Z"
                   fill="#000000"
-                ></path>{" "}
+                ></path>{' '}
                 <path
                   d="M9 5C9 4.44772 9.44772 4 10 4C10.5523 4 11 4.44772 11 5V15C11 15.5523 10.5523 16 10 16C9.44772 16 9 15.5523 9 15V5Z"
                   fill="#000000"
-                ></path>{" "}
+                ></path>{' '}
               </g>
             </svg>
           </Button>
@@ -126,14 +126,14 @@ function ListOrdersPage() {
                   strokeLinejoin="round"
                 ></g>
                 <g id="SVGRepo_iconCarrier">
-                  {" "}
+                  {' '}
                   <path
                     d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
                     stroke="#000000"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  ></path>{" "}
+                  ></path>{' '}
                 </g>
               </svg>
             </Button>
@@ -160,7 +160,7 @@ function ListOrdersPage() {
           <div className="text-center py-12 text-gray-500">
             {searchTerm
               ? `No se encontraron ordenes para "${searchTerm}"`
-              : "No hay ordenes disponibles"}
+              : 'No hay ordenes disponibles'}
           </div>
         )}
 
@@ -170,8 +170,8 @@ function ListOrdersPage() {
               <h1> #{order.id} </h1>
               <h1>Nombre del Cliente: {order.customerName}</h1>
               <p className="text-base">
-                Total: ${order.totalAmount} - Estado: {order.status} -{" "}
-                {order.isActive ? "Activado" : "Desactivado"}
+                Total: ${order.totalAmount} - Estado: {order.status} -{' '}
+                {order.isActive ? 'Activado' : 'Desactivado'}
               </p>
             </Card>
           ))}
